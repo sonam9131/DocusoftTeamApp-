@@ -237,8 +237,8 @@ const Member = ({ setMemberuser }: any) => {
         const filteredData = uniqueData.filter((item: any) => item.MTeamId !== null);
         let baseUrldata = "https://login.microsoftonline.com/00175dea-da9a-4dfa-8dd0-7f96eb63ace0/oauth2/v2.0/token";
         let bodydata = {
-          client_id: "9cc33c54-4615-47f4-94dc-7ccaa75e5378",
-          client_secret: "REDACTED_SECRET_ROTATE_ME",
+          client_id:  process.env.AAD_APP_CLIENT_ID,
+          client_secret: process.env.AAD_APP_CLIENT_SECRET,
           scope: "https://graph.microsoft.com/.default",
           grant_type: "client_credentials"
         }
@@ -280,9 +280,9 @@ const Member = ({ setMemberuser }: any) => {
   }
   const getAccessToken = () => {
     let request = {
-      "clientId": "9cc33c54-4615-47f4-94dc-7ccaa75e5378",
-      "clientSecret": "REDACTED_SECRET_ROTATE_ME",
-      "tenantId": "00175dea-da9a-4dfa-8dd0-7f96eb63ace0"
+       clientId: process.env.AAD_APP_CLIENT_ID,
+      clientSecret: process.env.AAD_APP_CLIENT_SECRET,
+      tenantId: process.env.AAD_APP_TENANT_ID,
     }
     CallApiphp(request, "getAccessToken", function (res: any) {
       if (res) {
