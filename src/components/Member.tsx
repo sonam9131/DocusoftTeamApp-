@@ -175,10 +175,10 @@ const Member = ({ setMemberuser }: any) => {
   };
 
   // async function getToken() {
-  //   const clientId = 'f4dd7cc3-897d-46dc-88a8-fe9c3057445d';
-  //   const clientSecret = 'REDACTED_SECRET_ROTATE_ME';
+  //   const clientId = '';
+  //   const clientSecret = '';
   //   const scope = 'https://graph.microsoft.com/.default'; // Adjust scope as needed
-  //   const tokenEndpoint = 'https://login.microsoftonline.com/65180896-6dc7-405c-9ec1-3839e91ae948/oauth2/v2.0/token';
+  //   const tokenEndpoint = '';
 
   //   const requestBody = new URLSearchParams({
   //     client_id: clientId,
