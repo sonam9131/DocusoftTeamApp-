@@ -452,7 +452,7 @@ console.log(folders,"foldersreduxdata");
         {
           "@odata.type": "#microsoft.graph.aadUserConversationMember",
           roles: ["owner"],
-          "user@odata.bind": `https://graph.microsoft.com/v1.0/users/9ea0ec3d-960d-4894-b9ef-f26a4adc6d35`,
+          "user@odata.bind": `https://graph.microsoft.com/v1.0/users/${currentuserData.id}`,
         },
       ],
       channels: template,//channels && channels.length > 0 ? channels : template,
