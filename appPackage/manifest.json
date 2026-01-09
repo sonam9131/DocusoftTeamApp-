@@ -1,0 +1,78 @@
+{
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.16/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.16",
+  "version": "1.0.1",
+  "id": "${{TEAMS_APP_ID}}",
+  "packageName": "com.microsoft.teams.extension",
+  "developer": {
+    "name": "Teams App, Inc.",
+    "websiteUrl": "${{TAB_ENDPOINT}}",
+    "privacyUrl": "${{TAB_ENDPOINT}}/index.html#/privacy",
+    "termsOfUseUrl": "${{TAB_ENDPOINT}}/index.html#/termsofuse"
+  },
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
+  "name": {
+    "short": "Docusoft-Teams-App-Data${{APP_NAME_SUFFIX}}",
+    "full": "Full name for Docusoft-Teams-App-Data"
+  },
+  "description": {
+    "short": "Short description of Docusoft-Teams-App-Data",
+    "full": "Full description of Docusoft-Teams-App-Data"
+  },
+  "accentColor": "#FFFFFF",
+  "bots": [],
+  "composeExtensions": [],
+  "configurableTabs": [],
+  "staticTabs": [
+    {
+      "entityId": "clients",
+      "name": "Clients",
+      "contentUrl": "https://Teams.docusms.uk/Clientcard/build/#/tab",
+      "websiteUrl": "https://Teams.docusms.uk/Clientcard/build/#/tab",
+      "scopes": ["personal"]
+    },
+    {
+      "entityId": "engagements",
+      "name": "Engagements",
+      "contentUrl": "https://Teams.docusms.uk/index.html#/enguagement",
+      "websiteUrl": "https://Teams.docusms.uk/index.html#/enguagement",
+      "scopes": ["personal"]
+    },
+    {
+      "entityId": "analytics",
+      "name": "Analytics",
+      "contentUrl": "https://Teams.docusms.uk/index.html#/analytics",
+      "websiteUrl": "https://Teams.docusms.uk/index.html#/analytics",
+      "scopes": ["personal"]
+    },
+    {
+      "entityId": "admin",
+      "name": "Admin",
+      "contentUrl": "https://Teams.docusms.uk/index.html#/admin",
+      "websiteUrl": "https://Teams.docusms.uk/index.html#/admin",
+      "scopes": ["personal"]
+    },
+    {
+      "entityId": "about",
+      "name": "About",
+      "contentUrl": "https://Teams.docusms.uk/index.html#/about",
+      "websiteUrl": "https://Teams.docusms.uk/index.html#/about",
+      "scopes": ["personal"]
+    }
+  ],
+  "permissions": [
+    "identity",
+    "messageTeamMembers"
+  ],
+  "validDomains": [
+    "teams.docusms.uk",
+    "localhost:53000"
+  ],
+  "webApplicationInfo": {
+    "id": "${{AAD_APP_CLIENT_ID}}",
+    "resource": "api://${{TAB_DOMAIN}}/${{AAD_APP_CLIENT_ID}}"
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "name": "docusoftteamsappdata",
+  "version": "0.1.0",
+  "engines": {
+    "node": "16 || 18"
+  },
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@fluentui/example-data": "^8.4.15",
+    "@fluentui/react-components": "^9.18.0",
+    "@microsoft/teams-js": "^2.20.0",
+    "@microsoft/teamsfx": "^2.2.0",
+    "@microsoft/teamsfx-react": "^3.0.0",
+    "@mui/icons-material": "^5.15.11",
+    "@mui/lab": "^5.0.0-alpha.168",
+    "@mui/material": "^5.15.11",
+    "@reduxjs/toolkit": "^2.11.2",
+    "axios": "^0.21.1",
+    "bootstrap": "^5.3.3",
+    "devextreme": "^23.2.4",
+    "devextreme-react": "^23.2.4",
+    "jquery": "^3.7.1",
+    "react": "^18.2.0",
+    "react-bootstrap": "^2.10.1",
+    "react-dom": "^18.2.0",
+    "react-redux": "^9.2.0",
+    "react-router-dom": "^6.8.0",
+    "react-scripts": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/jquery": "^3.5.29",
+    "@types/node": "^14.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "@types/react-router-dom": "^5.3.3",
+    "env-cmd": "^10.1.0",
+    "typescript": "^4.1.2"
+  },
+  "scripts": {
+    "dev:teamsfx": "concurrently \"npm run dev-tab:teamsfx\" \"npm run dev-api:teamsfx\"",
+    "dev-tab:teamsfx": "env-cmd --silent -f .localConfigs npm run start",
+    "dev-api:teamsfx": "cd api && npm run dev:teamsfx",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "homepage": "."
+}

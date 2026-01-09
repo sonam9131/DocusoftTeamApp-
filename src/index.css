@@ -1,0 +1,196 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #f1f1f1 !important;
+}
+
+@media only screen and (max-width: 768px) {
+  body {
+    width: fit-content;
+  }
+}
+
+
+/* #root > div > div{
+  background-color: white;
+} */
+
+
+.custom-tabs .btn-tabs {
+  background: #fff;
+  margin-right: 8px;
+  text-transform: capitalize;
+  padding: 14px 30px;
+  border-radius: 4px;
+  box-shadow: 0px 0px 10px #ebebeb;
+  margin-bottom: 8px;
+  transition: .5s all ease;
+}
+
+.custom-tabs .btn-tabs span {
+  font-weight: 600;
+}
+
+.custom-tabs .btn-tabs::before,
+.custom-tabs .btn-tabs.Mui-selected:after,
+.custom-tabs .btn-tabs:after {
+  display: none !important;
+}
+
+.custom-tabs .btn-tabs.f1y7q3j9,
+.custom-tabs .btn-tabs:hover {
+  background-color: #D41B20 !important;
+  color: #fff;
+}
+
+.custom-tabs .btn-tabs.f1y7q3j9 span,
+.custom-tabs .btn-tabs:hover span {
+  color: #fff !important;
+}
+
+.custom-tabs .MuiTabs-indicator {
+  display: none;
+}
+
+.custom-tabs .btn-tabs span::after {
+  display: none;
+}
+
+.white-box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 6px;
+  box-shadow: 0 0 15px #d5d5d5;
+}
+
+hr {
+  background-color: #c3c3c3;
+}
+
+.dx-link-edit,
+.dx-link-save {
+  border: 1px solid #444791;
+  color: #444791 !important;
+  padding: 5px !important;
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 6px;
+}
+
+.dx-link-delete,
+.dx-link-cancel {
+  border: 1px solid #d41b20;
+  color: #d41b20 !important;
+  padding: 5px !important;
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 6px;
+}
+
+.dx-datagrid-addrow-button i {
+  color: #fff !important;
+  font-size: 24px !important;
+}
+
+.dx-datagrid-addrow-button {
+  background: #444791;
+  display: none;
+}
+.dx-datagrid-addrow-button:hover {
+  background: #d41b20;
+}
+
+.dx-pager .dx-pages .dx-page, .dx-pager .dx-page-sizes .dx-page-size {
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+.dx-pager .dx-page-sizes .dx-selection, .dx-pager .dx-pages .dx-selection {
+  background-color: #444791 !important;
+  border-color: #444791 !important;
+}
+.dx-datagrid .dx-datagrid-table .dx-header-row>td {
+  background: #444791;
+  color: #fff;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.dx-datagrid .dx-datagrid-table .dx-header-row>td * {
+  color: #fff;
+}
+.dx-datagrid-borders>.dx-datagrid-header-panel {
+  margin-bottom: 10px;
+}
+.btn-blue,.btn-blue:hover {
+  background: #444791 !important;
+}
+.btn-red,.btn-red:hover {
+  background: #d41b20 !important;
+}
+.white-box-bordered {
+  box-shadow: none;
+  border: 2px solid #F1F1F1;
+}
+.btn-blue.Mui-disabled {
+  color: #fff !important;
+  opacity: .4;
+  cursor: none;
+}
+.advance-setting-box {
+  background: #fff;
+  border: 2px solid #f1f1f1;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 30px;
+  width: 100%;
+}
+.advance-setting-box .MuiFormControlLabel-root {
+  border-bottom: 1px solid #f1f1f1;
+  width: 100%;
+  display: inline-flex;
+  margin: 0;
+}
+.advance-setting-box .MuiFormControlLabel-root:last-child {
+  border-bottom: 0px;
+}
+.advance-setting-box h6 {
+  font-size: 17px;
+  margin-bottom: 20px;
+  color: #4d428e;
+  /* border-bottom: 2px solid #4d428e; */
+  /* padding-bottom: 12px; */
+}
+.dx-datagrid .dx-datagrid-table .dx-header-row>td .dx-checkbox-icon {
+  border-color: #fff;
+}
+.custom-data-grid .dx-datagrid-rowsview .dx-row td .dx-checkbox-checked .dx-checkbox-icon {
+  background: #4d428e;
+}
+.MuiStepper-vertical .MuiStepLabel-root .MuiStepLabel-iconContainer.Mui-completed .MuiSvgIcon-root,
+.MuiStepper-vertical .MuiStepLabel-root .MuiStepLabel-iconContainer .MuiSvgIcon-root.Mui-active,
+.MuiRadio-root.MuiRadio-colorPrimary,
+.MuiSwitch-switchBase.MuiSwitch-colorPrimary.Mui-checked {
+  color: #4d428e !important;
+}
+
+.dx-datagrid .dx-datagrid-table .dx-header-row>td .dx-checkbox-checked .dx-checkbox-icon,
+.dx-datagrid .dx-datagrid-table .dx-header-row>td .dx-checkbox-indeterminate .dx-checkbox-icon {
+  background: #7261d1;
+}
+.position-btn {
+  position: relative;
+  top: 44px;
+  z-index: 9;
+}
+.custom-table div {
+  min-height: auto;
+  max-height: max-content;
+  height: auto;
+}

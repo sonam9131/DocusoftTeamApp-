@@ -1,0 +1,52 @@
+.custom-data-grid .dx-datagrid-rowsview .dx-row {
+    height: 10px; /* Adjust the row height as needed */
+  }
+
+  .star {
+    visibility:hidden;
+    font-size:30px;
+    cursor:pointer;
+}
+.star:before {
+   content: "\2605";
+   position: absolute;
+   visibility:visible;
+}
+.star:checked:before {
+   content: "\2606";
+   position: absolute;
+}
+  
+.text-yellow { 
+  color: #ff9400d6 !important; 
+}
+
+.star {
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.star:before {
+  content: "\2605";
+  position: absolute;
+}
+
+.star.checked:before {
+  content: "\2606";
+  position: absolute;
+}
+
+#dx-ad8ce432-dbc1-9d97-7d8c-aeb3d9879486 > tbody > tr.dx-row.dx-data-row.dx-row-lines.dx-selection > td:nth-child(3) > div:nth-child(1) > span{
+  padding: 0!important;
+}
+
+.css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root{
+  padding: 0!important;
+}
+.custom-data-grid .dx-datagrid-rowsview .dx-row td {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.textarea {
+  width: 100%;
+}
