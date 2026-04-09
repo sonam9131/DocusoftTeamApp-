@@ -7,7 +7,7 @@ import {
   SelectTabData,
   TabValue,
 } from "@fluentui/react-components";
-import "./Client.css";
+import "./css/Client.css";
 import { EditCode } from "./EditCode";
 import { AzureFunctions } from "./AzureFunctions";
 import { CurrentUser } from "./CurrentUser";
@@ -58,7 +58,7 @@ export function Client(props: { showFunction?: boolean; environment?: string }) 
     console.log("clear")
     e.preventDefault();
     localStorage.clear();
-    window.location.href = "/login"; // Adjust the path as needed
+    window.location.href = "https://teams.docusms.uk/index.html#/login"; // Adjust the path as needed
   
    // prop.setShowH1(false);
   //  history.replace('/app1');

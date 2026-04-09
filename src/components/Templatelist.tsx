@@ -15,7 +15,7 @@ import DataGrid, {
 import DiscountCell from "./DiscountCell";
 import { Client } from "./sample/Client";
 import CallApi, { CallApiphp } from "./sample/Services/Apicall";
-import "./sample/App1.css";
+import './sample/css/App1.css';
 import { Button } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";

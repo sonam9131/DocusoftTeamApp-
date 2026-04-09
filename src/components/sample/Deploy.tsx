@@ -1,5 +1,5 @@
 import React from "react";
-import "./Deploy.css";
+import "./css/Deploy.css";
 import { Image } from "@fluentui/react-components";
 
 export function Deploy(props: { docsUrl?: string }) {

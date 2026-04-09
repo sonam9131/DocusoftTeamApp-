@@ -1,13 +1,10 @@
 // import { Container } from '@mui/material'
 import React, { useContext, useEffect, useState } from "react";
 // import { Col } from 'react-bootstrap'
-import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
+  Alert,
   Autocomplete,
   Button,
   FormControl,
@@ -27,40 +24,35 @@ import {
 
 } from "@mui/material";
 import CallApi, { CallApiphp } from "../Services/Apicall";
-import { ExpandMore } from "@mui/icons-material";
 import Member from "../../Member";
 import { useData } from "@microsoft/teamsfx-react";
 import { TeamsFxContext } from "../../Context";
 import { app } from "@microsoft/teams-js";
-import { settings } from "cluster";
+import { getAccessTokenLogin, loginIfNeeded } from "../../../auth/tokenService";
 let folderData: any;
 let clientData: any;
 let clientName: any;
 let agrno: any = localStorage.getItem("agrno");
 let email: any = localStorage.getItem("email");
 let password: any = localStorage.getItem("pass");
-let intUserid: any = localStorage.getItem("intUserId");
 export default function ImportclientForm() {
-  const [tabs, setTabs] = useState<any>([]);
   const [channels, setChannels] = useState<any>([]);
-  const [expanded1, setExpanded1] = useState<string | false>(false);
+   const [selectedTeam, setSelectedTeam] = useState<any>(null);
   const [advancedSettingChecked, setAdvancedSettingChecked] = useState(true);
-  const [channels1true, setChannels1true] = useState<any>(false);
   const [folders, setFolders] = useState([]); // State to hold folders data
   const [bussiness, setBussiness] = useState([]); // State to hold folders data
   const [checkboxfeb, setCheckboxfeb] = useState<any>(false);
-  const [switchStates, setSwitchStates] = useState<any>({});
   const [selectedFolderID, setSelectedFolderID] = useState<number | null>(null);
   const [selectedBussId, setSelectedBussId] = useState<number | null>(null);
-  const [expanded, setExpanded] = useState<string | false>(false);
   const [tabsapidata, setTabsapidata] = useState<any>([]);
   const [teams, setTeams] = useState([]);
-  const [value, setValue] = useState<any>(null);
   const [template, setTemplate] = useState<any>(null);
   const [templateData, setTemplateData] = useState<any>(null);
-  const [getclientid, setGetclientid] = useState("");
+  const [alertContent, setAlertContent] = useState("");   
+const [alert, setAlert] = useState(false);
+ const [memberData, setMemberData] = useState<any[]>([]); 
+const [selectedRoles, setSelectedRoles] = useState<any>({});
   const [memberuser, setMemberuser] = useState([]);
-  const [getprojectid, setGetprojectid] = useState("");
   const [channelSettings, setChannelSettings] = useState({
     allowCreateUpdateChannels: true,
     allowDeleteChannels: true,
@@ -79,42 +71,7 @@ export default function ImportclientForm() {
     allowChannelMentions: true,
     showInTeamsSearchAndSuggestions: true
   });
-  const [userDetail, setUserDetail] = useState({
-    CHnumber: "",
-    Clientname: "",
-    Clientid: "",
-    Mobile: "",
-    Telephone: "",
-    Line1: "",
-    Line2: "",
-    Line3: "",
-    Town: "",
-    MCounty: "",
-    Postcode: "",
-    BilLine1: "",
-    BilLine2: "",
-    BilLine3: "",
-    BilTown: "",
-    BilCountry: "",
-    BilPostcode: "",
-    regLine1: "",
-    regLine2: "",
-    regLine3: "",
-    regTown: "",
-    regCountry: "",
-    regPostcode: "",
-    Selectclient: "",
-    Selectteamsa: "",
-    addDetails: "",
-    mainAddress: "",
-    biliAddress: "",
-    regAddress: "",
-    fullAddress: "",
-    Bussiness: "",
-    Status: "",
-    Source: "",
-    Manager: "",
-  });
+
   const handleChannelSettingChange = (event: any) => {
     const { name, checked } = event.target;
     setChannelSettings((prevSettings) => ({
@@ -212,12 +169,11 @@ export default function ImportclientForm() {
   ) => {
     event.preventDefault();
     if (value) {
-      setValue(value.TemplateId ? value.TemplateId : "");
+      setSelectedTeam(value);
       console.log(value, "SourceIdiiioioioi");
       getMSTeamsTemplatesDetailsById(value.TemplateId);
     } else {
-      // If no option is selected, clear the selectedFolderID state
-      setValue(null);
+     
     }
   };
   const getMSTeamsTemplatesList = () => {
@@ -235,21 +191,23 @@ export default function ImportclientForm() {
       }
     });
   };
-  const getAccessToken = () => {
-    let request = {
-       clientId: process.env.AAD_APP_CLIENT_ID,
-      clientSecret: process.env.AAD_APP_CLIENT_SECRET,
-      tenantId: process.env.AAD_APP_TENANT_ID,
-    }
-    CallApiphp(request, "getAccessToken", function (res: any) {
-      if (res) {
-        console.log(res.token, "getAccessToken");
-        // getUsersMSTeam(res.token);
-        setTemplateData(res.token);
-      } else {
-      }
-    });
-  }
+  // const getAccessToken = async() => {
+  //   // let request = {
+  //   //   "clientId": "9cc33c54-4615-47f4-94dc-7ccaa75e5378",
+  //   //   "clientSecret": "REDACTED_SECRET_ROTATE_ME",
+  //   //   "tenantId": "00175dea-da9a-4dfa-8dd0-7f96eb63ace0"
+  //   // }
+  //   // CallApiphp(request, "getAccessToken", function (res: any) {
+  //   //   if (res) {
+  //   //     console.log(res.token, "getAccessTokensssssssssssssss");
+  //       // getUsersMSTeam(res.token);
+  //        const token = await getAccessTokenLogin(); // 🔥 auto refresh
+  //        console.log(token, "impgetAccessTokenLogin_token");
+  //       setTemplateData(token);
+  //   //   } else {
+  //   //   }
+  //   // });
+  // }
   const getMSTeamsTemplatesDetailsById = (templateId: any) => {
     let requestBody = {
       agrno: agrno,
@@ -391,22 +349,13 @@ const newChannels1: any = [...channels];
     }, 4000);
 
   }
-  const userName = loading || error ? "" : data!.displayName;
-  const hubName = useData(async () => {
-    await app.initialize();
-    const context = await app.getContext();
-    return context.app.host.name;
-  })?.data;
   const userNameData: any = loading || error ? "" : data;
   console.log(memberuser, "memberusermemberuser");
   const createDefaultTeam = () => {
-    let datacurrent:any = localStorage.getItem("currentUser");
-    let currentuserData = JSON.parse(datacurrent);
     console.log(channels,"datacurrentsonam",template);
     let agrno: any = localStorage.getItem("agrno");
     let email: any = localStorage.getItem("email");
     let password: any = localStorage.getItem("pass");
-    let projectId: any = localStorage.getItem("projectid");
     let templatedata: any = {
       "template@odata.bind":
         "https://graph.microsoft.com/v1.0/teamsTemplates/standard",
@@ -419,7 +368,7 @@ const newChannels1: any = [...channels];
           "roles":[
               "owner"
 ],
-          "user@odata.bind":`https://graph.microsoft.com/v1.0/users/9ea0ec3d-960d-4894-b9ef-f26a4adc6d35`
+          "user@odata.bind":`https://graph.microsoft.com/v1.0/users/${localStorage.getItem("userId")}`
         }
       ],
       channels: template,//channels && channels.length > 0 ? channels : template,
@@ -475,35 +424,7 @@ const newChannels1: any = [...channels];
       }
     });
   };
-  // const createDefaultTeam = () => {
-  //   let passdata: any = localStorage.getItem("pass");
-  //   let requestBody = {
-  //     agrno: localStorage.getItem("agrno"),
-  //     Email: localStorage.getItem("email"),
-  //     password: passdata,
-  //     clientId: clientData ? clientData : "",
-  //     displayName: clientName ? clientName : "",
-  //     description: "Docusoft related data with documents and apps.",
-  //     projectId: folderData ? folderData : "",
-  //   };
-  //   console.log("getDomian");
-  //   CallApiphp(requestBody, "createDefaultTeam", function (res: any) {
-  //     if (res) {
-  //       console.log(res, "response11");
-  //     } else {
-  //     }
-  //   });
-  // };
-  const handleSubmit = (event: any) => {
-    event.preventDefault();
-    createDefaultTeam();
-  };
-  const onChangeProject = (e: any) => {
-    setGetprojectid(e.target.value);
-  };
-  const onChangeClient = (e: any) => {
-    setGetclientid(e.target.value);
-  };
+  
   const Json_getMSTeamsTabList = () => {
     let requestBody = {
       agrno: localStorage.getItem("agrno"),//agrno,
@@ -527,9 +448,8 @@ const newChannels1: any = [...channels];
     index: any,
     itemdata:any
   ) => {
-    const isChecked = event.target.checked;
-    
-    setChannels1true(event.target.checked);
+
+
 
     // Create a new tab object structure
     var Objt = {
@@ -561,7 +481,21 @@ setTimeout(() => {
   };
   useEffect(() => {
     Json_getMSTeamsTabList();
-    getAccessToken();
+    // const init = async () => {
+    //   await getAccessToken();
+    // }
+    // init();
+      const init = async () => {
+        try {
+          await loginIfNeeded();      // 🔐 ensure login
+          const token = await getAccessTokenLogin(); // 🔑 then token
+          console.log(token, "impoMycientgetAccessTokenLogin token");
+          setTemplateData(token);
+        } catch (e) {
+          console.error("Auth failed", e);
+        }
+      };
+      init();
   }, []);
   const Json_GetConfiguration = () => {
     let passdata: any = localStorage.getItem("pass");
@@ -588,10 +522,7 @@ setTimeout(() => {
     Json_GetConfiguration();
     getMSTeamsTemplatesList();
   }, []);
-  const handleChangeaccord =
-    (panel: string) => (_event: React.ChangeEvent<{}>, isExpanded: boolean) => {
-      setExpanded1(isExpanded ? panel : false);
-    };
+
   const onChangebussines = (
     event: React.ChangeEvent<{}>,
     value: BussinessList | null
@@ -617,19 +548,64 @@ setTimeout(() => {
     options: bussiness,
     getOptionLabel: (option: BussinessList) => option.Client || "",
   };
-  const handleChange =
-    (panel: string) => (_event: React.ChangeEvent<{}>, isExpanded: boolean) => {
-      setExpanded(isExpanded ? panel : false);
-    };
 
   // stepper
   const [activeStep, setActiveStep] = React.useState(0);
 
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    // setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    if (activeStep === 0) {
+  // Validate Folder List
+  if (!selectedFolderID) {
+    setAlertContent("Folder is required.");
+    setAlert(true);
+    setTimeout(() => setAlert(false), 3000);
+    return;
+  }
+
+  // Validate Client ID
+  if (!clientData) {
+    setAlertContent("Client is required.");
+    setAlert(true);
+    setTimeout(() => setAlert(false), 3000);
+    return;
+  }
+
+ 
+}
+      if (activeStep === 1) {
+    console.log(memberuser, "memberusermemberuser");
+  if (!Array.isArray(memberuser) || memberuser.length == 0) {
+    setAlertContent("Please select at least one member.");
+    setAlert(true);
+    setTimeout(() => setAlert(false), 3000);
+    return;
+  }
+
+  const invalidRole = memberuser.some(
+    (m: any) => !m.roles || !m.roles[0]
+  );
+
+  if (invalidRole) {
+    setAlertContent("Please assign role to selected member.");
+    setAlert(true);
+    setTimeout(() => setAlert(false), 3000);
+    return;
+  }
+}
+// ✅ STEP 2 - Only Teams Dropdown Required
+if (activeStep === 2) {
+  if (!selectedTeam) {
+    setAlertContent("Please select a Team.");
+    setAlert(true);
+    setTimeout(() => setAlert(false), 3000);
+    return;
+  }
+}
     if (activeStep === steps.length - 1) {
       createDefaultTeam(); // Call createDefaultTeam only when it's the last step
     }
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
   const handleBack = () => {
@@ -696,7 +672,13 @@ setTimeout(() => {
       description:
         <Box className='mb-4'>
           {/* <h6>Members Data</h6> */}
-          <Member setMemberuser={setMemberuser} />
+           <Member
+            memberData={memberData}
+            setMemberData={setMemberData}
+            selectedRoles={selectedRoles}
+            setSelectedRoles={setSelectedRoles}
+            setMemberuser={setMemberuser}   // ✅ ADD THIS
+          />
         </Box>
     },
 
@@ -711,6 +693,7 @@ setTimeout(() => {
               <Autocomplete
                 {...defaultProps}
                 id="clear-on-escape-teams"
+                value={selectedTeam}
                 //value={value}
                 onChange={onChangeTeams}
                 clearOnEscape
@@ -740,15 +723,7 @@ setTimeout(() => {
                     </div>
                   </Grid>
 
-                  {/* <Grid item xs={6} md={6}>
-
-                    <div style={{ marginBottom: "20px" }}>
-                      <FormControl fullWidth variant="outlined">
-                      {item1?.description}
-                      </FormControl>
-                    </div>
-
-                  </Grid> */}
+                  
                 </Grid>
 
                 <Grid container spacing={3}>
@@ -788,59 +763,9 @@ setTimeout(() => {
                             label={item.displayName} /></>
                   ))}
 
-                {/* <FormControlLabel
-                      control={<Switch   checked={channels1.jason}
-                      onChange={(e) => handleChangeTabs(e, i)}
-                      name="Task"/>}
-                      label="Task"
-                    />
-
-<FormControlLabel
-                      control={<Switch   checked={channels1.antoine}
-                      onChange={(e) => handleChangeTabs(e, i)}
-                      name="DMS"/>}
-                      label="DMS"
-                    />
-                    
-                   */}
+           
               </FormGroup>
-              {/* {channels1true && ( 
-                  <>
-                    <Grid container spacing={3}>
-                      <Grid item xs={6} md={6}>
-                        <div style={{ marginBottom: "20px" }}>
-                          <TextField
-                            fullWidth
-                            disabled
-                            id="standard-basic-client"
-                            label="Project ID"
-                            variant="standard"
-                            name="ProjectID"
-                            
-                            value={selectedFolderID}
-                            onChange={onChangeProject}
-                          />
-                        </div>
-                      </Grid>
-
-                      <Grid item xs={6} md={6}>
-                        <div style={{ marginBottom: "20px" }}>
-                          <TextField
-                            fullWidth
-                            disabled
-                            id="standard-basic-id"
-                            label="Client ID"
-                            variant="standard"
-                            name="ClientID"
-                            
-                            value={clientName}
-                            onChange={onChangeClient}
-                          />
-                        </div>
-                      </Grid>
-                    </Grid>
-                  </>
-                )} */}
+             
             </Box>
           </Grid>
                 </Grid>
@@ -853,24 +778,7 @@ setTimeout(() => {
           {/* {test setting data start here} */}
           <div style={{ marginBottom: "20px" }}>
 
-            {/* <div style={{ marginBottom: "20px" }}>
-              <Accordion
-                expanded={expanded1 === "panel2dats"}
-                onChange={handleChangeaccord("panel2dats")}
-              >
-
-                <AccordionSummary
-                  expandIcon={<ExpandMore />}
-                  aria-controls="panel2dats-content"
-                  id="panel2dats-header"
-                >
-                  <h6>Members Data</h6>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Member setMemberuser={setMemberuser} />
-                </AccordionDetails>
-              </Accordion>
-            </div> */}
+            
 
             <h6>Advanced Setting</h6>
             <FormGroup>
@@ -883,10 +791,7 @@ setTimeout(() => {
                 }
                 label="Use Default"
               />
-              {/* <FormControlLabel
-                      control={<Switch defaultChecked />}
-                      label="Use Default"
-                    /> */}
+              
             </FormGroup>
             {!advancedSettingChecked && (
               <Box className="mt-4">
@@ -1127,7 +1032,13 @@ setTimeout(() => {
     <Box>
       <Row>
         <Col>
-
+  {alert ? (
+            <div style={{ marginBottom: "20px" }}>
+              <Alert severity="error">{alertContent}</Alert>
+            </div>
+          ) : (
+            <></>
+          )}
           {/* stepper start */}
           <Box >
             <Stepper activeStep={activeStep} orientation="vertical">

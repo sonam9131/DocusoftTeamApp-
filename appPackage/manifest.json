@@ -1,78 +1,43 @@
 {
-  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.16/MicrosoftTeams.schema.json",
-  "manifestVersion": "1.16",
-  "version": "1.0.1",
-  "id": "${{TEAMS_APP_ID}}",
-  "packageName": "com.microsoft.teams.extension",
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.15/MicrosoftTeams.schema.json",
+  "version": "1.0.0",
+  "manifestVersion": "1.15",
+  "id": "5d16e893-ac61-4392-9a1a-30e16d288681",
+  "name": {
+    "short": "Docusoft-Teams-App-Datalocal",
+    "full": "Full name for Docusoft-Teams-App-Data"
+  },
   "developer": {
     "name": "Teams App, Inc.",
-    "websiteUrl": "${{TAB_ENDPOINT}}",
-    "privacyUrl": "${{TAB_ENDPOINT}}/index.html#/privacy",
-    "termsOfUseUrl": "${{TAB_ENDPOINT}}/index.html#/termsofuse"
-  },
-  "icons": {
-    "color": "color.png",
-    "outline": "outline.png"
-  },
-  "name": {
-    "short": "Docusoft-Teams-App-Data${{APP_NAME_SUFFIX}}",
-    "full": "Full name for Docusoft-Teams-App-Data"
+    "websiteUrl": "https://localhost:53000",
+    "privacyUrl": "https://localhost:53000/index.html#/privacy",
+    "termsOfUseUrl": "https://localhost:53000/index.html#/termsofuse"
   },
   "description": {
     "short": "Short description of Docusoft-Teams-App-Data",
     "full": "Full description of Docusoft-Teams-App-Data"
   },
+  "icons": {
+    "outline": "outline.png",
+    "color": "color.png"
+  },
   "accentColor": "#FFFFFF",
-  "bots": [],
-  "composeExtensions": [],
-  "configurableTabs": [],
   "staticTabs": [
     {
-      "entityId": "clients",
-      "name": "Clients",
-      "contentUrl": "https://Teams.docusms.uk/Clientcard/build/#/tab",
-      "websiteUrl": "https://Teams.docusms.uk/Clientcard/build/#/tab",
-      "scopes": ["personal"]
-    },
-    {
-      "entityId": "engagements",
-      "name": "Engagements",
-      "contentUrl": "https://Teams.docusms.uk/index.html#/enguagement",
-      "websiteUrl": "https://Teams.docusms.uk/index.html#/enguagement",
-      "scopes": ["personal"]
-    },
-    {
-      "entityId": "analytics",
-      "name": "Analytics",
-      "contentUrl": "https://Teams.docusms.uk/index.html#/analytics",
-      "websiteUrl": "https://Teams.docusms.uk/index.html#/analytics",
-      "scopes": ["personal"]
-    },
-    {
-      "entityId": "admin",
-      "name": "Admin",
-      "contentUrl": "https://Teams.docusms.uk/index.html#/admin",
-      "websiteUrl": "https://Teams.docusms.uk/index.html#/admin",
-      "scopes": ["personal"]
-    },
-    {
-      "entityId": "about",
-      "name": "About",
-      "contentUrl": "https://Teams.docusms.uk/index.html#/about",
-      "websiteUrl": "https://Teams.docusms.uk/index.html#/about",
-      "scopes": ["personal"]
+      "entityId": "index",
+      "name": "Personal Tab",
+      "contentUrl": "https://localhost:53000/index.html#/tab",
+      "websiteUrl": "https://localhost:53000/index.html#/tab",
+      "scopes": [
+        "personal"
+      ]
     }
   ],
-  "permissions": [
-    "identity",
-    "messageTeamMembers"
-  ],
   "validDomains": [
-    "teams.docusms.uk",
     "localhost:53000"
   ],
   "webApplicationInfo": {
-    "id": "${{AAD_APP_CLIENT_ID}}",
-    "resource": "api://${{TAB_DOMAIN}}/${{AAD_APP_CLIENT_ID}}"
+    "id": "9cc33c54-4615-47f4-94dc-7ccaa75e5378",
+    "resource": "api://9cc33c54-4615-47f4-94dc-7ccaa75e5378"
   }
-}
+} 

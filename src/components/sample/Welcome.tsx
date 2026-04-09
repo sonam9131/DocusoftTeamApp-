@@ -7,7 +7,7 @@ import {
   SelectTabData,
   TabValue,
 } from "@fluentui/react-components";
-import "./Welcome.css";
+import "./css/Welcome.css";
 import { EditCode } from "./EditCode";
 import { AzureFunctions } from "./AzureFunctions";
 import { CurrentUser } from "./CurrentUser";

@@ -1,5 +1,5 @@
 import * as React from "react";
-import "./Createtabs.css";
+// import "./Createtabs.css";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import CallApi, { CallApiphp } from "../Services/Apicall";
@@ -36,6 +36,7 @@ import { TeamsFxContext } from "../../Context";
 // import { Json_GetFolders } from "../../redux/dev_teams_api_helper";
 import { useDispatch, useSelector } from "react-redux";
 import { getMSTeamsTemplatesList, Json_GetConfiguration, Json_GetFolders, Json_getMSTeamsTabList } from "../../../redux/dev_teams_api_helper";
+import { getAccessTokenLogin, loginIfNeeded } from "../../../auth/tokenService";
 let folderData: any;
 let bussinessData: any;
 let sourceData: any;
@@ -75,6 +76,8 @@ console.log(folders,"foldersreduxdata");
 
   // const [teams, setTeams] = useState([]);
   const [memberuser, setMemberuser] = useState([]);
+  const [memberData, setMemberData] = useState<any[]>([]);
+const [selectedRoles, setSelectedRoles] = useState<any>({});
   // const [tabsapidata, setTabsapidata] = useState<any>([]);
   // const [bussiness, setBussiness] = useState([]); 
   // const [sources, setSources] = useState([]); 
@@ -98,6 +101,7 @@ console.log(folders,"foldersreduxdata");
   const [ragistersCountry, setRagistersCountry] = useState(
     countries.find((country) => country.label === "United Kingdom")?.label
   );
+  const [selectedTeam, setSelectedTeam] = useState<any>(null);
   const [value, setValue] = useState<any>(null);
   const [template, setTemplate] = useState<any>(null);
   const [templateData, setTemplateData] = useState<any>(null);
@@ -188,25 +192,42 @@ console.log(folders,"foldersreduxdata");
   //     }
   //   });
   // };
-    useEffect(() => {
+//     useEffect(() => {
+//   dispatch(Json_GetFolders());
+//   dispatch(Json_GetConfiguration());
+//   dispatch(getMSTeamsTemplatesList());
+//   dispatch(Json_getMSTeamsTabList());
+// }, [dispatch]);
+useEffect(() => {
+  const agrno = localStorage.getItem("agrno");
+  const email = localStorage.getItem("email");
+ const pass = localStorage.getItem("pass");
+  if (!agrno || !email || !pass) {
+    console.warn("User data not ready yet");
+    return;
+  }
+
   dispatch(Json_GetFolders());
   dispatch(Json_GetConfiguration());
   dispatch(getMSTeamsTemplatesList());
   dispatch(Json_getMSTeamsTabList());
 }, [dispatch]);
-  const getAccessToken = () => {
-    let request = {
-      clientId: process.env.AAD_APP_CLIENT_ID,
-      clientSecret: process.env.AAD_APP_CLIENT_SECRET,
-      tenantId: process.env.AAD_APP_TENANT_ID,
-    };
-    CallApiphp(request, "getAccessToken", function (res: any) {
-      if (res) {
-        setTemplateData(res.token);
-      } else {
-      }
-    });
-  };
+
+  // const getAccessToken = async () => {
+  //   // let request = {
+  //   //   "clientId": "9cc33c54-4615-47f4-94dc-7ccaa75e5378",
+  //   //   "clientSecret": "REDACTED_SECRET_ROTATE_ME",
+  //   //   "tenantId": "00175dea-da9a-4dfa-8dd0-7f96eb63ace0"
+  //   // };
+  //   // CallApiphp(request, "getAccessToken", function (res: any) {
+  //   //   if (res) {
+  //   const token = await getAccessTokenLogin(); // 🔥 auto refresh
+  //   console.log(token, "creategetAccessTokenLogin_token");
+  //       setTemplateData(token);
+  //   //   } else {
+  //   //   }
+  //   // });
+  // };
   // const getMSTeamsTemplatesList = () => {
   //   let requestBody = {
   //     agrno: agrno,
@@ -224,9 +245,9 @@ console.log(folders,"foldersreduxdata");
   // };
   const getMSTeamsTemplatesDetailsById = (templateId: any) => {
     let requestBody = {
-      agrno: agrno,
-      strEmail: email,
-      password: password,
+      agrno: localStorage.getItem("agrno"),
+      strEmail: localStorage.getItem("email"),
+      password: localStorage.getItem("pass"),
       TemplateId: templateId,
     };
 
@@ -452,7 +473,7 @@ console.log(folders,"foldersreduxdata");
         {
           "@odata.type": "#microsoft.graph.aadUserConversationMember",
           roles: ["owner"],
-          "user@odata.bind": `https://graph.microsoft.com/v1.0/users/${currentuserData.id}`,
+          "user@odata.bind": `https://graph.microsoft.com/v1.0/users/${localStorage.getItem("userId")}`,
         },
       ],
       channels: template,//channels && channels.length > 0 ? channels : template,
@@ -504,7 +525,7 @@ console.log(folders,"foldersreduxdata");
       accessToken: templateData,
     };
     console.log("getDomian");
-    CallApiphp(clienttestObj, "createDefaultTeam1", function (res: any) {
+    CallApiphp(clienttestObj, "createDefaultTeam", function (res: any) {
       if (res) {
         console.log(res, "response11");
       } else {
@@ -527,6 +548,7 @@ console.log(folders,"foldersreduxdata");
     event.preventDefault();
     if (value) {
       setValue(value.TemplateId ? value.TemplateId : "");
+       setSelectedTeam(value);
       console.log(value, "SourceIdiiioioioi");
       getMSTeamsTemplatesDetailsById(value.TemplateId);
     } else {
@@ -534,21 +556,40 @@ console.log(folders,"foldersreduxdata");
     }
   };
 
-  const onChangeclientlist = (
-    event: React.ChangeEvent<{}>,
-    value: FolderList | null
-  ) => {
-    event.preventDefault();
-    if (value) {
-      // Update the selectedFolderID state with the FolderID of the selected option
-      folderData = value.FolderID;
-      setSelectedFolderID(value.FolderID);
-      console.log(value.FolderID, "FolderID", selectedFolderID);
-    } else {
-      setSelectedFolderID(null);
-    }
-  };
+  // const onChangeclientlist = (
+  //   event: React.ChangeEvent<{}>,
+  //   value: FolderList | null
+  // ) => {
+  //   event.preventDefault();
+  //   if (value) {
+  //     // Update the selectedFolderID state with the FolderID of the selected option
+  //     folderData = value.FolderID;
+  //     setSelectedFolderID(value.FolderID);
+  //     console.log(value.FolderID, "FolderID", selectedFolderID);
+  //   } else {
+  //     setSelectedFolderID(null);
+  //   }
+  // };
+const onChangeclientlist = (
+  event: any,
+  value: FolderList | any
+) => {
+  if (value) {
+    setSelectedFolderID(value.FolderID);
 
+    setUserDetail((prev: any) => ({
+      ...prev,
+      Selectclient: value, // store full object
+    }));
+  } else {
+    setSelectedFolderID(null);
+
+    setUserDetail((prev: any) => ({
+      ...prev,
+      Selectclient: null,
+    }));
+  }
+};
   const onChange_registerCountry = (
     event: React.ChangeEvent<{}>,
     value: CountryType | null
@@ -689,7 +730,7 @@ console.log(folders,"foldersreduxdata");
     (manager: any) => manager.UserId == intUserid
   );
   const [selectedManager, setSelectedManager] = useState(
-    defaultUser ? defaultUser.UserName : "Sonam"
+    defaultUser ? defaultUser.UserName : ""
   );
 
   // const [biling, setBiling] = useState(defaultUser);
@@ -728,7 +769,17 @@ console.log(folders,"foldersreduxdata");
     // Json_GetConfiguration();
     // getMSTeamsTemplatesList();
     // Json_getMSTeamsTabList();
-    getAccessToken();
+      const init = async () => {
+    try {
+      await loginIfNeeded();      // 🔐 ensure login
+      const token = await getAccessTokenLogin(); // 🔑 then token
+      console.log(token, "createMycientgetAccessTokenLogin token");
+      setTemplateData(token);
+    } catch (e) {
+      console.error("Auth failed", e);
+    }
+  };
+  init();
   }, []); // Empty dependency array ensures useEffect runs only once after initial render
   const defaultProps = {
     options: teams,
@@ -800,65 +851,210 @@ console.log(folders,"foldersreduxdata");
   };
 
   const [activeStep, setActiveStep] = React.useState(0);
+const isStepValid = (step: number) => {
+  if (step === 0) {
+    return (
+      userDetail.Clientname?.trim() !== "" &&
+      userDetail.Clientid?.trim() !== "" &&
+      userDetail.Selectclient?.trim() !== ""
+    );
+  }
 
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    if (activeStep === steps.length - 1) {
-      let agrno: any = localStorage.getItem("agrno");
-      let email: any = localStorage.getItem("email");
-      let password: any = localStorage.getItem("pass");
-      let projectId: any = localStorage.getItem("projectid");
-      let clientdata = {
-        agrno: agrno,
-        Email: email,
-        password: password,
-        ProjectIdList: folderData ? folderData : -1,
-        OriginatorNo: userDetail.Clientid ? userDetail.Clientid : "",
-        OriginatorName: userDetail.Clientname ? userDetail.Clientname : "",
-        Address: userDetail.fullAddress ? userDetail.fullAddress : "",
-        TelNo: "",
-        AlteTelNo: "",
-        Faxno: "",
-        ContactName: "",
-        UDF1: "",
-        UDF2: "",
-        UDF3: "",
-        StickyNote: "",
-        ContactEmail: "",
-        MParameter: "",
-        CDate: todayDate(),
-        BussId: bussinessData ? bussinessData : -1,
-        SourceId: sourceData ? sourceData : -1,
-        StatusId: statusData ? statusData : -1,
-        Description: "",
-        OrgPassword: "",
-        ManagerId: managerData ? managerData : parseInt(intUserid),
-        OrgActive: "Yes",
-      };
+  return true; // other steps valid by default
+};
+const handleNext = () => {
+  // 🔹 STEP 0 VALIDATION (Folder List Mandatory)
+  // if (activeStep === 0) {
+  //   if (!folderData || folderData === -1) {
+  //     setAlertContent("Folder List is required.");
+  //     setAlert(true);
+  //     setTimeout(() => setAlert(false), 3000);
+  //     return; // 🚫 STOP STEP CHANGE
+  //   }
+  // }
+if (activeStep === 0) {
+  // Validate Client Name
+  if (!userDetail.Clientname || userDetail.Clientname.trim() === "") {
+    setAlertContent("Client Name is required.");
+    setAlert(true);
+    setTimeout(() => setAlert(false), 3000);
+    return;
+  }
 
-      CallApi(clientdata, "Json_AddClient", function (res: any) {
-        if (res) {
-          let str = JSON.parse(JSON.stringify(res));
-          let json = JSON.parse(str.d);
-          console.log(json, "Json_AddClient");
-          if (json.Status == "Success") {
-            mainAddress();
-            billingAddress();
-            ragisterAddress();
-            createDefaultTeam();
-          } else {
-            setAlertContent("Reference ID Already Exist");
-            setAlert(true);
-            setTimeout(() => {
-              setAlert(false);
-            }, 3000); // Hide after 5 seconds
-          }
+  // Validate Client ID
+  if (!userDetail.Clientid || userDetail.Clientid.trim() === "") {
+    setAlertContent("Client ID is required.");
+    setAlert(true);
+    setTimeout(() => setAlert(false), 3000);
+    return;
+  }
+
+  // Validate Folder List
+  if (!userDetail.Selectclient) {
+    setAlertContent("Folder List is required.");
+    setAlert(true);
+    setTimeout(() => setAlert(false), 3000);
+    return;
+  }
+}
+// 🔹 STEP 1 VALIDATION
+  // if (activeStep === 1) {
+  //   if (!memberuser || memberuser.length === 0) {
+  //     setAlertContent("Please select at least one member.");
+  //     setAlert(true);
+  //     setTimeout(() => setAlert(false), 3000);
+  //     return;
+  //   }
+  // }
+  if (activeStep === 1) {
+    console.log(memberuser, "memberusermemberuser");
+  if (!Array.isArray(memberuser) || memberuser.length == 0) {
+    setAlertContent("Please select at least one member.");
+    setAlert(true);
+    setTimeout(() => setAlert(false), 3000);
+    return;
+  }
+
+  const invalidRole = memberuser.some(
+    (m: any) => !m.roles || !m.roles[0]
+  );
+
+  if (invalidRole) {
+    setAlertContent("Please assign role to selected member.");
+    setAlert(true);
+    setTimeout(() => setAlert(false), 3000);
+    return;
+  }
+}
+// ✅ STEP 2 - Only Teams Dropdown Required
+if (activeStep === 2) {
+  if (!selectedTeam) {
+    setAlertContent("Please select a Team.");
+    setAlert(true);
+    setTimeout(() => setAlert(false), 3000);
+    return;
+  }
+}
+
+
+  // 🔹 IF LAST STEP → CALL API
+  if (activeStep === steps.length - 1) {
+    let agrno: any = localStorage.getItem("agrno");
+    let email: any = localStorage.getItem("email");
+    let password: any = localStorage.getItem("pass");
+    let projectId: any = localStorage.getItem("projectid");
+
+    let clientdata = {
+      agrno: agrno,
+      Email: email,
+      password: password,
+      ProjectIdList: folderData ? folderData : -1,
+      OriginatorNo: userDetail.Clientid ? userDetail.Clientid : "",
+      OriginatorName: userDetail.Clientname ? userDetail.Clientname : "",
+      Address: userDetail.fullAddress ? userDetail.fullAddress : "",
+      TelNo: "",
+      AlteTelNo: "",
+      Faxno: "",
+      ContactName: "",
+      UDF1: "",
+      UDF2: "",
+      UDF3: "",
+      StickyNote: "",
+      ContactEmail: "",
+      MParameter: "",
+      CDate: todayDate(),
+      BussId: bussinessData ? bussinessData : 0,
+      SourceId: sourceData ? sourceData : 0,
+      StatusId: statusData ? statusData : 0,
+      Description: "",
+      OrgPassword: "",
+      ManagerId: managerData ? managerData : parseInt(intUserid),
+      OrgActive: "Yes",
+    };
+
+    CallApi(clientdata, "Json_AddClient", function (res: any) {
+      if (res) {
+        let str = JSON.parse(JSON.stringify(res));
+        let json = JSON.parse(str.d);
+
+        if (json.Status == "Success") {
+          mainAddress();
+          billingAddress();
+          ragisterAddress();
+          createDefaultTeam();
         } else {
-          // Handle error if needed
+          setAlertContent("Reference ID Already Exist");
+          setAlert(true);
+          setTimeout(() => setAlert(false), 3000);
         }
-      }); // Call createDefaultTeam only when it's the last step
-    }
-  };
+      }
+    });
+
+    return; // 🚫 DO NOT INCREMENT STEP AFTER API
+  }
+
+  // 🔹 NORMAL STEP INCREMENT
+  setActiveStep((prevActiveStep) => prevActiveStep + 1);
+};
+
+  // const handleNext = () => {
+  //   setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  //   if (activeStep === steps.length - 1) {
+  //     let agrno: any = localStorage.getItem("agrno");
+  //     let email: any = localStorage.getItem("email");
+  //     let password: any = localStorage.getItem("pass");
+  //     let projectId: any = localStorage.getItem("projectid");
+  //     let clientdata = {
+  //       agrno: agrno,
+  //       Email: email,
+  //       password: password,
+  //       ProjectIdList: folderData ? folderData : -1,
+  //       OriginatorNo: userDetail.Clientid ? userDetail.Clientid : "",
+  //       OriginatorName: userDetail.Clientname ? userDetail.Clientname : "",
+  //       Address: userDetail.fullAddress ? userDetail.fullAddress : "",
+  //       TelNo: "",
+  //       AlteTelNo: "",
+  //       Faxno: "",
+  //       ContactName: "",
+  //       UDF1: "",
+  //       UDF2: "",
+  //       UDF3: "",
+  //       StickyNote: "",
+  //       ContactEmail: "",
+  //       MParameter: "",
+  //       CDate: todayDate(),
+  //       BussId: bussinessData ? bussinessData : 0,
+  //       SourceId: sourceData ? sourceData : 0,
+  //       StatusId: statusData ? statusData : 0,
+  //       Description: "",
+  //       OrgPassword: "",
+  //       ManagerId: managerData ? managerData : parseInt(intUserid),
+  //       OrgActive: "Yes",
+  //     };
+
+  //     CallApi(clientdata, "Json_AddClient", function (res: any) {
+  //       if (res) {
+  //         let str = JSON.parse(JSON.stringify(res));
+  //         let json = JSON.parse(str.d);
+  //         console.log(json, "Json_AddClient");
+  //         if (json.Status == "Success") {
+  //           mainAddress();
+  //           billingAddress();
+  //           ragisterAddress();
+  //           createDefaultTeam();
+  //         } else {
+  //           setAlertContent("Reference ID Already Exist");
+  //           setAlert(true);
+  //           setTimeout(() => {
+  //             setAlert(false);
+  //           }, 3000); // Hide after 5 seconds
+  //         }
+  //       } else {
+  //         // Handle error if needed
+  //       }
+  //     }); // Call createDefaultTeam only when it's the last step
+  //   }
+  // };
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -905,6 +1101,24 @@ console.log(folders,"foldersreduxdata");
 
           <Grid item xs={6} md={6}>
             <Autocomplete
+  {...clientlist}
+  id="clientlist"
+  clearOnEscape
+  value={userDetail.Selectclient || null}   // 👈 CONTROL HERE
+  onChange={onChangeclientlist}
+  isOptionEqualToValue={(option:any, value:any) =>
+    option.FolderID === value.FolderID
+  }
+  getOptionLabel={(option:any) => option.Folder || ""}
+  renderInput={(params) => (
+    <TextField
+      {...params}
+      label="Folder List"
+      variant="outlined"
+    />
+  )}
+/>
+            {/* <Autocomplete
               {...clientlist}
               id="clientlist"
               clearOnEscape
@@ -916,10 +1130,10 @@ console.log(folders,"foldersreduxdata");
                   name="Selectclient"
                   value={userDetail.Selectclient}
                   onChange={onChange}
-                  label="Client List"
+                  label="Folder List"
                 />
               )}
-            />
+            /> */}
           </Grid>
         </Grid>
       ),
@@ -931,7 +1145,14 @@ console.log(folders,"foldersreduxdata");
       description: (
         <Box className="mb-4">
           {/* <h6>Members Data</h6> */}
-          <Member setMemberuser={setMemberuser} />
+          {/* <Member setMemberuser={setMemberuser} /> */}
+          <Member
+  memberData={memberData}
+  setMemberData={setMemberData}
+  selectedRoles={selectedRoles}
+  setSelectedRoles={setSelectedRoles}
+  setMemberuser={setMemberuser}   // ✅ ADD THIS
+/>
         </Box>
       ),
     },
@@ -947,6 +1168,7 @@ console.log(folders,"foldersreduxdata");
               <Autocomplete
                 {...defaultProps}
                 id="clear-on-escape-teams"
+                 value={selectedTeam}
                 //value={value}
                 onChange={onChangeTeams}
                 clearOnEscape
@@ -1822,14 +2044,14 @@ console.log(folders,"foldersreduxdata");
                 <FormControlLabel
                   value="create"
                   control={<Radio />}
-                  label="Create Client"
+                  label="Create Client1"
                 />
               </Box>
               <Box>
                 <FormControlLabel
                   value="import"
                   control={<Radio />}
-                  label="Import Client"
+                  label="Import Client11"
                 />
               </Box>
             </RadioGroup>

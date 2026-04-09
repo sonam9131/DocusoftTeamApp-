@@ -1,29 +1,23 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import ODataStore from 'devextreme/data/odata/store';
 
 import DataGrid, {
   Column,
   DataGridTypes,
   Editing,
-  Grouping,
-  GroupPanel,
   Pager,
   Paging,
   SearchPanel,
   Selection
 } from 'devextreme-react/data-grid';
-import DiscountCell from './DiscountCell';
-import { Client } from './sample/Client';
 import CallApi, { CallApiphp } from './sample/Services/Apicall';
-import './sample/App1.css';
-import { Button } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
+import './sample/css/App1.css';
 import StarIcon from '@mui/icons-material/Star';
 import { styled } from '@mui/material/styles';
 import StarBorderIcon from '@mui/icons-material/StarBorder'; 
 // import StarIcon from '@mui/icons-material/Star'; 
 import Checkbox from '@mui/material/Checkbox';
+import { getAccessTokenLogin, loginIfNeeded } from '../auth/tokenService';
  
  
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
@@ -128,7 +122,22 @@ const handleCheckboxChange = (rowData: any) => {
     // Call the function to fetch folders data
     Json_GetAllSupplierList();
     Json_GetToFavourites();
-    getAccessToken();
+    // getAccessToken();
+    // const init = async () => {
+    //   await getAccessToken();
+    // }
+    // init();
+    const init = async () => {
+            try {
+              await loginIfNeeded();      // 🔐 ensure login
+              const token = await getAccessTokenLogin(); // 🔑 then token
+              console.log(token, "app1MycientgetAccessTokenLogin token");
+              setTemplateData(token);
+            } catch (e) {
+              console.error("Auth failed", e);
+            }
+          };
+          init();
   }, []); // Empty dependency array ensures useEffect runs only once after initial render
   const getTeamsDetailsByTeamId = (MTeamId:any) => {
     
@@ -309,21 +318,23 @@ const Json_RemoveToFavourite = (rowData: any) => {
     }
   });
 };
-const getAccessToken = () => {
-  let request = {
-    clientId: process.env.AAD_APP_CLIENT_ID,
-      clientSecret: process.env.AAD_APP_CLIENT_SECRET,
-      tenantId: process.env.AAD_APP_TENANT_ID,
-  }
-  CallApiphp(request, "getAccessToken", function (res: any) {
-    if (res) {
-      console.log(res.token, "getAccessToken");
-      // getUsersMSTeam(res.token);
-      setTemplateData(res.token);
-    } else {
-    }
-  });
-}
+// const getAccessToken = async () => {
+//   // let request = {
+//   //   "clientId": "9cc33c54-4615-47f4-94dc-7ccaa75e5378",
+//   //   "clientSecret": "REDACTED_SECRET_ROTATE_ME",
+//   //   "tenantId": "00175dea-da9a-4dfa-8dd0-7f96eb63ace0"
+//   // }
+//   // CallApiphp(request, "getAccessToken", function (res: any) {
+//   //   if (res) {
+//   //     console.log(res.token, "getAccessToken");
+//       // getUsersMSTeam(res.token);
+//       const token = await getAccessTokenLogin(); // 🔥 auto refresh
+//       console.log(token, "App1getAccessTokenLogin_token");
+//       setTemplateData(token);
+//     // } else {
+//     // }
+//   // });
+// }
 const handleDelete = (e:any) => {
   // Handle row deletion here
   console.log('Row_deletedssss:', e.data);

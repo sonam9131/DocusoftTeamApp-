@@ -1,113 +1,281 @@
 {
-  "id": "${{AAD_APP_OBJECT_ID}}",
-  "appId": "${{AAD_APP_CLIENT_ID}}",
-  "displayName": "Docusoft-Teams-App-Data-aad",
-  "identifierUris": [
-    "api://${{TAB_DOMAIN}}/${{AAD_APP_CLIENT_ID}}"
-  ],
-  "signInAudience": "AzureADMyOrg",
-  "api": {
-    "requestedAccessTokenVersion": 2,
-    "oauth2PermissionScopes": [
-      {
-        "adminConsentDescription": "Allows Teams to call the app's web APIs as the current user.",
-        "adminConsentDisplayName": "Teams can access app's web APIs",
-        "id": "${{AAD_APP_ACCESS_AS_USER_PERMISSION_ID}}",
-        "isEnabled": true,
-        "type": "User",
-        "userConsentDescription": "Enable Teams to call this app's web APIs with the same rights that you have",
-        "userConsentDisplayName": "Teams can access app's web APIs and make requests on your behalf",
-        "value": "access_as_user"
-      }
-    ],
-    "preAuthorizedApplications": [
-      {
-        "appId": "1fec8e78-bce4-4aaf-ab1b-5451cc387264",
-        "delegatedPermissionIds": [
-          "${{AAD_APP_ACCESS_AS_USER_PERMISSION_ID}}"
-        ]
-      },
-      {
-        "appId": "5e3ce6c0-2b1f-4285-8d4b-75ee78787346",
-        "delegatedPermissionIds": [
-          "${{AAD_APP_ACCESS_AS_USER_PERMISSION_ID}}"
-        ]
-      },
-      {
-        "appId": "d3590ed6-52b3-4102-aeff-aad2292ab01c",
-        "delegatedPermissionIds": [
-          "${{AAD_APP_ACCESS_AS_USER_PERMISSION_ID}}"
-        ]
-      },
-      {
-        "appId": "00000002-0000-0ff1-ce00-000000000000",
-        "delegatedPermissionIds": [
-          "${{AAD_APP_ACCESS_AS_USER_PERMISSION_ID}}"
-        ]
-      },
-      {
-        "appId": "bc59ab01-8403-45c6-8796-ac3ef710b3e3",
-        "delegatedPermissionIds": [
-          "${{AAD_APP_ACCESS_AS_USER_PERMISSION_ID}}"
-        ]
-      },
-      {
-        "appId": "0ec893e0-5785-4de6-99da-4ed124e5296c",
-        "delegatedPermissionIds": [
-          "${{AAD_APP_ACCESS_AS_USER_PERMISSION_ID}}"
-        ]
-      },
-      {
-        "appId": "4765445b-32c6-49b0-83e6-1d93765276ca",
-        "delegatedPermissionIds": [
-          "${{AAD_APP_ACCESS_AS_USER_PERMISSION_ID}}"
-        ]
-      },
-      {
-        "appId": "4345a7b9-9a63-4910-a426-35363201d503",
-        "delegatedPermissionIds": [
-          "${{AAD_APP_ACCESS_AS_USER_PERMISSION_ID}}"
-        ]
-      }
-    ]
-  },
-  "info": {},
-  "optionalClaims": {
-    "idToken": [],
-    "accessToken": [
-      {
-        "name": "idtyp",
-        "source": null,
-        "essential": false,
-        "additionalProperties": []
-      }
-    ],
-    "saml2Token": []
-  },
-  "publicClient": {
-    "redirectUris": []
-  },
-  "requiredResourceAccess": [
-    {
-      "resourceAppId": "Microsoft Graph",
-      "resourceAccess": [
-        {
-          "id": "User.Read",
-          "type": "Scope"
-        }
-      ]
-    }
-  ],
-  "web": {
-    "redirectUris": [
-      "${{TAB_ENDPOINT}}/auth-end.html"
-    ],
-    "implicitGrantSettings": {}
-  },
-  "spa": {
-    "redirectUris": [
-      "${{TAB_ENDPOINT}}/auth-end.html?clientId=${{AAD_APP_CLIENT_ID}}",
-      "${{TAB_ENDPOINT}}/blank-auth-end.html"
-    ]
-  }
+	"id": "8888a22f-9373-45e1-a453-e2b9198b05fa",
+	"deletedDateTime": null,
+	"appId": "9cc33c54-4615-47f4-94dc-7ccaa75e5378",
+	"applicationTemplateId": null,
+	"disabledByMicrosoftStatus": null,
+	"createdDateTime": "2024-03-19T16:01:33Z",
+	"displayName": "DsTeamApp",
+	"description": null,
+	"groupMembershipClaims": null,
+	"identifierUris": [
+		"api://localhost:53000/9cc33c54-4615-47f4-94dc-7ccaa75e5378"
+	],
+	"isDeviceOnlyAuthSupported": null,
+	"isFallbackPublicClient": true,
+	"nativeAuthenticationApisEnabled": null,
+	"notes": null,
+	"publisherDomain": "docusoft.co",
+	"serviceManagementReference": null,
+	"signInAudience": "AzureADandPersonalMicrosoftAccount",
+	"tags": [],
+	"tokenEncryptionKeyId": null,
+	"samlMetadataUrl": null,
+	"defaultRedirectUri": null,
+	"certification": null,
+	"optionalClaims": null,
+	"requestSignatureVerification": null,
+	"addIns": [],
+	"api": {
+		"acceptMappedClaims": null,
+		"knownClientApplications": [],
+		"requestedAccessTokenVersion": 2,
+		"oauth2PermissionScopes": [
+			{
+				"adminConsentDescription": "Allows the app to call the backend API on behalf of the signed-in user",
+				"adminConsentDisplayName": "Access the API as the admin",
+				"id": "631851ab-8e82-43b9-bbd9-caaf70d8d7d4",
+				"isEnabled": true,
+				"type": "User",
+				"userConsentDescription": "Allows the app to call the backend API on behalf of the signed-in user",
+				"userConsentDisplayName": "Access the API as the user",
+				"value": "access_as_user"
+			},
+			{
+				"adminConsentDescription": "DSteamApp",
+				"adminConsentDisplayName": "DSteamApp",
+				"id": "588deaf6-45e8-4c1b-abd8-091584f3842b",
+				"isEnabled": true,
+				"type": "User",
+				"userConsentDescription": null,
+				"userConsentDisplayName": null,
+				"value": "all"
+			}
+		],
+		"preAuthorizedApplications": [
+			{
+				"appId": "5e3ce6c0-2b1f-4285-8d4b-75ee78787346",
+				"delegatedPermissionIds": [
+					"631851ab-8e82-43b9-bbd9-caaf70d8d7d4"
+				]
+			},
+			{
+				"appId": "1fec8e78-bce4-4aaf-ab1b-5451cc387264",
+				"delegatedPermissionIds": [
+					"631851ab-8e82-43b9-bbd9-caaf70d8d7d4"
+				]
+			},
+			{
+				"appId": "9cc33c54-4615-47f4-94dc-7ccaa75e5378",
+				"delegatedPermissionIds": [
+					"631851ab-8e82-43b9-bbd9-caaf70d8d7d4"
+				]
+			}
+		]
+	},
+	"appRoles": [],
+	"info": {
+		"logoUrl": null,
+		"marketingUrl": null,
+		"privacyStatementUrl": null,
+		"supportUrl": null,
+		"termsOfServiceUrl": null
+	},
+	"keyCredentials": [],
+	"parentalControlSettings": {
+		"countriesBlockedForMinors": [],
+		"legalAgeGroupRule": "Allow"
+	},
+	"passwordCredentials": [
+		{
+			"customKeyIdentifier": null,
+			"displayName": "DSteams1",
+			"endDateTime": "2026-07-05T15:11:25.778Z",
+			"hint": "JsJ",
+			"keyId": "ca8f6335-01e6-4153-8805-015ab1f4ecfd",
+			"secretText": null,
+			"startDateTime": "2026-01-06T16:11:25.778Z"
+		},
+		{
+			"customKeyIdentifier": null,
+			"displayName": "DSteamApp",
+			"endDateTime": "2026-03-28T08:26:27.201Z",
+			"hint": "ebo",
+			"keyId": "cc5a65dc-73c0-4ac9-a33a-1f730a14a747",
+			"secretText": null,
+			"startDateTime": "2024-03-28T08:26:27.201Z"
+		}
+	],
+	"publicClient": {
+		"redirectUris": []
+	},
+	"requiredResourceAccess": [
+		{
+			"resourceAppId": "00000003-0000-0000-c000-000000000000",
+			"resourceAccess": [
+				{
+					"id": "88e58d74-d3df-44f3-ad47-e89edf4472e4",
+					"type": "Scope"
+				},
+				{
+					"id": "3db89e36-7fa6-4012-b281-85f3d9d9fd2e",
+					"type": "Scope"
+				},
+				{
+					"id": "485be79e-c497-4b35-9400-0e3fa7f2a5d4",
+					"type": "Scope"
+				},
+				{
+					"id": "e1fe6dd8-ba31-4d61-89e7-88639da4683d",
+					"type": "Scope"
+				},
+				{
+					"id": "a154be20-db9c-4678-8ab7-66f6cc099a59",
+					"type": "Scope"
+				},
+				{
+					"id": "204e0828-b5ca-4ad8-b9f3-f32a958e7cc4",
+					"type": "Scope"
+				},
+				{
+					"id": "dc149144-f292-421e-b185-5953f2e98d7f",
+					"type": "Role"
+				},
+				{
+					"id": "f3a65bd4-b703-46df-8f7e-0174fea562aa",
+					"type": "Role"
+				},
+				{
+					"id": "6a118a39-1227-45d4-af0c-ea7b40d210bc",
+					"type": "Role"
+				},
+				{
+					"id": "59a6b24b-4225-4393-8165-ebaec5f55d7a",
+					"type": "Role"
+				},
+				{
+					"id": "3b55498e-47ec-484f-8136-9013221c06a9",
+					"type": "Role"
+				},
+				{
+					"id": "35930dcf-aceb-4bd1-b99a-8ffed403c974",
+					"type": "Role"
+				},
+				{
+					"id": "62a82d76-70ea-41e2-9197-370581804d09",
+					"type": "Role"
+				},
+				{
+					"id": "23fc2474-f741-46ce-8465-674744c5c361",
+					"type": "Role"
+				},
+				{
+					"id": "2280dda6-0bfd-44ee-a2f4-cb867cfc4c1e",
+					"type": "Role"
+				},
+				{
+					"id": "660b7406-55f1-41ca-a0ed-0b035e182f3e",
+					"type": "Role"
+				},
+				{
+					"id": "0121dc95-1b9f-4aed-8bac-58c5ac466691",
+					"type": "Role"
+				},
+				{
+					"id": "4437522e-9a86-4a41-a7da-e380edd4a97d",
+					"type": "Role"
+				},
+				{
+					"id": "242607bd-1d2c-432c-82eb-bdb27baa23ab",
+					"type": "Role"
+				},
+				{
+					"id": "bdd80a03-d9bc-451d-b7c4-ce7c63fe3c8f",
+					"type": "Role"
+				},
+				{
+					"id": "49981c42-fd7b-4530-be03-e77b21aed25e",
+					"type": "Role"
+				},
+				{
+					"id": "46890524-499a-4bb2-ad64-1476b4f3e1cf",
+					"type": "Role"
+				},
+				{
+					"id": "a96d855f-016b-47d7-b51c-1218a98d791c",
+					"type": "Role"
+				},
+				{
+					"id": "6163d4f4-fbf8-43da-a7b4-060fe85ed148",
+					"type": "Role"
+				},
+				{
+					"id": "425b4b59-d5af-45c8-832f-bb0b7402348a",
+					"type": "Role"
+				},
+				{
+					"id": "6323133e-1f6e-46d4-9372-ac33a0870636",
+					"type": "Role"
+				},
+				{
+					"id": "75bcfbce-a647-4fba-ad51-b63d73b210f4",
+					"type": "Role"
+				},
+				{
+					"id": "df021288-bdef-4463-88db-98f22de89214",
+					"type": "Role"
+				},
+				{
+					"id": "97235f07-e226-4f63-ace3-39588e11d3a1",
+					"type": "Role"
+				},
+				{
+					"id": "741f803b-c850-494e-b5df-cde7c675a1ca",
+					"type": "Role"
+				},
+				{
+					"id": "1ca167d5-1655-44a1-8adf-1414072e1ef9",
+					"type": "Scope"
+				}
+			]
+		}
+	],
+	"verifiedPublisher": {
+		"displayName": null,
+		"verifiedPublisherId": null,
+		"addedDateTime": null
+	},
+	"web": {
+		"homePageUrl": null,
+		"logoutUrl": null,
+		"redirectUris": [
+			"https://www.digitalpractice.net/docuSoftApps/teams/getAccessToken"
+		],
+		"implicitGrantSettings": {
+			"enableAccessTokenIssuance": true,
+			"enableIdTokenIssuance": true
+		},
+		"redirectUriSettings": [
+			{
+				"uri": "https://www.digitalpractice.net/docuSoftApps/teams/getAccessToken",
+				"index": null
+			}
+		]
+	},
+	"servicePrincipalLockConfiguration": {
+		"isEnabled": true,
+		"allProperties": true,
+		"credentialsWithUsageVerify": true,
+		"credentialsWithUsageSign": true,
+		"identifierUris": false,
+		"tokenEncryptionKeyId": true
+	},
+	"spa": {
+		"redirectUris": [
+			"https://localhost:53000/index.html",
+			"https://localhost:53000/login",
+			"https://localhost:53000",
+			"http://localhost:5500/account/client_card_details.html"
+		]
+	}
 }

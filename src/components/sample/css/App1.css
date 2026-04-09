@@ -50,3 +50,7 @@
 .textarea {
   width: 100%;
 }
+
+.dx-datagrid-borders>.dx-datagrid-header-panel {
+    margin-bottom: 55px!important;
+}

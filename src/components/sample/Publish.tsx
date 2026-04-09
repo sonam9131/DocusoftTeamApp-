@@ -1,5 +1,5 @@
 import React from "react";
-import "./Publish.css";
+import "./css/Publish.css";
 import { Image } from "@fluentui/react-components";
 
 export function Publish(props: { docsUrl?: string }) {
