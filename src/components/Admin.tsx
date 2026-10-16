@@ -7,17 +7,13 @@ import {
   Switch,
   TextField,
 } from "@mui/material";
-import {
-  SelectTabData,
-  SelectTabEvent,
-  Tab,
-  TabList,
-  TabValue,
-} from "@fluentui/react-components";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import CallApi, { CallApiphp } from "./sample/Services/Apicall";
 import MergeComponent from "./Merge";
-import AppHeader from "./AppHeader";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 // let agrno: any = localStorage.getItem("agrno");
 // let email: any = localStorage.getItem("email");
 // let password: any = localStorage.getItem("pass");
@@ -483,37 +479,65 @@ export default function Admin() {
       </div>
     );
   }
-  const [selectedValue, setSelectedValue] = useState<TabValue>("local");
-  const onTabSelect = (event: SelectTabEvent, data: SelectTabData) => {
-    setSelectedValue(data.value);
-  };
+  const [selectedValue] = useState<"local">("local");
+  const navigate = useNavigate();
   console.log(channels, "channelschannels", channelSettings);
   const [showCreateTemplate, setShowCreateTemplate] = useState(false);
 
   const CreateTemplate =() => {
     setShowCreateTemplate(!showCreateTemplate);
   }
+
+  const clearLocal = () => {
+    localStorage.clear();
+    window.location.href = "https://teams.docusms.uk/index.html#/login";
+  };
+
   return (
-    <div className="welcome page container">
-      <AppHeader title="Template Administration" />
-    <div className="tabList container">
-      <TabList selectedValue={selectedValue} onTabSelect={onTabSelect} className='custom-tabs'>
-        <Tab className="btn-tabs" id="Local" value="local">
-          1. TEMPLATE SETTING  
-        </Tab>
-        {/* <Tab className="btn-tabs" id="Azure" value="azure">
-          2. MY CLIENT
-        </Tab>
-        <Tab className="btn-tabs" id="Publish" value="publish">
-          3. All CLIENTS
-        </Tab> */}
-      </TabList>
-      <div>
-        {selectedValue === "local" && (
-          <MergeComponent />
-        )}
-      </div>
-    </div>
+    <div className="app-shell">
+      <aside className="app-sidebar">
+        <div className="app-sidebar__brand">
+          <div className="app-sidebar__logo-wrap">
+            <img
+              src="https://mydocusoft.com/assets/images/logo.png"
+              className="app-sidebar__logo"
+              alt="Docusoft"
+            />
+          </div>
+        </div>
+
+        <button type="button" className="app-sidebar__link" onClick={() => navigate("/tab")}>
+          <span className="app-sidebar__icon"><ArrowBackRoundedIcon fontSize="inherit" /></span>
+          <span>Back to App</span>
+        </button>
+
+        <div className="app-sidebar__section-label" style={{ marginTop: 20 }}>Administration</div>
+        <nav className="app-sidebar__nav">
+          <button type="button" className="app-sidebar__link active">
+            <span className="app-sidebar__icon"><SettingsOutlinedIcon fontSize="inherit" /></span>
+            <span>Template Setting</span>
+          </button>
+        </nav>
+
+        <div className="app-sidebar__footer">
+          <button type="button" className="app-sidebar__signout" onClick={clearLocal}>
+            <LogoutRoundedIcon fontSize="small" />
+            <span>Sign Out</span>
+          </button>
+        </div>
+      </aside>
+
+      <main className="app-main">
+        <div className="app-main__header">
+          <div className="app-main__eyebrow">Docusoft Teams</div>
+          <div className="app-main__title">Template Administration</div>
+        </div>
+        <div className="app-main__content">
+          {selectedValue === "local" && (
+            <MergeComponent />
+          )}
+        </div>
+      </main>
     </div>
   );
 }

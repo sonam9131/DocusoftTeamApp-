@@ -551,7 +551,7 @@ const savetemplate = () => {
   for (let i = 0; i < additionalFieldsCount; i++) {
 
     additionalFields.push(
-      <Grid key={i} className="white-box white-box-bordered mb-4" item xs={6} md={6}>
+      <Grid key={i} className="channel-card mb-4" item xs={6} md={6}>
         <h5 className="mb-4">Channel-{i + 1}</h5>
 
         <Grid container spacing={3}>
@@ -1004,18 +1004,19 @@ const savetemplate = () => {
             </div>
           </div>
         ) : (
-          <>
+          <div className="white-box data-grid-card">
             {isviblebutton && (<Button
               variant="contained"
               onClick={CreateTemplate}
-              className="btn-blue position-btn"
+              className="btn-blue"
+              sx={{ mb: 2 }}
             // disabled={!groupname}
             >
               Create Template
             </Button>)}
 
             <Templatelist setIsviblebutton={setIsviblebutton} />
-          </>
+          </div>
 
         )}
       </div>

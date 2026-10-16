@@ -44,6 +44,7 @@
     "dev-api:teamsfx": "cd api && npm run dev:teamsfx",
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "serve": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "eject": "react-scripts eject"
   },

@@ -586,79 +586,99 @@ const handleLoginClick = async () => {
         {showH1 ? (
         <Client />
         ) : (
-          <div className="login-screen">
+          <div className="login-split">
             <CssBaseline />
-            <div className="login-card">
-              <Image
-                src="https://mydocusoft.com/assets/images/logo.png"
-                className="login-card__logo"
-                alt="Docusoft"
-              />
-              <Typography className="login-card__title" component="h1" variant="h5">
-                Welcome back
-              </Typography>
-              <Typography className="login-card__subtitle">
-                Sign in to continue to Docusoft Teams
-              </Typography>
 
-              <form noValidate onSubmit={handleSubmit}>
-                {alert ? (
-                  <div style={{ marginBottom: "16px" }}>
-                    <Alert severity="error">{alertContent}</Alert>
-                  </div>
-                ) : (
-                  <></>
-                )}
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  autoFocus
-                  value={agrno_MENT}
-                  onChange={(e) => {
-                    setAgrno_MENT(e.target.value);
-                  }}
+            <div className="login-split__hero">
+              <div className="login-split__hero-logo-wrap">
+                <Image
+                  src="https://mydocusoft.com/assets/images/logo.png"
+                  className="login-split__hero-logo"
+                  alt="Docusoft"
                 />
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
-                  value={email_MENT}
-                  onChange={(e) => {
-                    setEmail_MENT(e.target.value);
-                  }}
-                />
-                <div className="login-card__footer-row">
-                  <FormControlLabel
-                    control={<Checkbox value="remember" color="primary" />}
-                    label={<span style={{ fontSize: 14 }}>Remember me</span>}
-                  />
-                  <Link href="https://mydocusoft.com/forgot-password.html" variant="body2">
-                    Forgot password?
-                  </Link>
-                </div>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  className="login-card__submit btn-blue"
-                >
-                  Sign In
-                </Button>
-              </form>
+              </div>
+              <h1 className="login-split__hero-title">
+                One place to run every client Team.
+              </h1>
+              <p className="login-split__hero-subtitle">
+                Create, import and manage your Microsoft Teams clients directly
+                from Docusoft — no more jumping between tools.
+              </p>
+              <ul className="login-split__hero-points">
+                <li>Spin up a branded Team in a few clicks</li>
+                <li>Import existing clients without re-keying data</li>
+                <li>Keep every engagement organised in one view</li>
+              </ul>
             </div>
-            <div className="login-screen__copyright">
-              &copy; {new Date().getFullYear()} Docusoft. All rights reserved.
+
+            <div className="login-split__panel">
+              <div className="login-card">
+                <Typography className="login-card__title" component="h1" variant="h5">
+                  Welcome back
+                </Typography>
+                <Typography className="login-card__subtitle">
+                  Sign in to continue to Docusoft Teams
+                </Typography>
+
+                <form noValidate onSubmit={handleSubmit}>
+                  {alert ? (
+                    <div style={{ marginBottom: "16px" }}>
+                      <Alert severity="error">{alertContent}</Alert>
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+                  <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="email"
+                    label="Email Address"
+                    name="email"
+                    autoComplete="email"
+                    autoFocus
+                    value={agrno_MENT}
+                    onChange={(e) => {
+                      setAgrno_MENT(e.target.value);
+                    }}
+                  />
+                  <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type="password"
+                    id="password"
+                    autoComplete="current-password"
+                    value={email_MENT}
+                    onChange={(e) => {
+                      setEmail_MENT(e.target.value);
+                    }}
+                  />
+                  <div className="login-card__footer-row">
+                    <FormControlLabel
+                      control={<Checkbox value="remember" color="primary" />}
+                      label={<span style={{ fontSize: 14 }}>Remember me</span>}
+                    />
+                    <Link href="https://mydocusoft.com/forgot-password.html" variant="body2">
+                      Forgot password?
+                    </Link>
+                  </div>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    className="login-card__submit btn-blue"
+                  >
+                    Sign In
+                  </Button>
+                </form>
+              </div>
+              <div className="login-screen__copyright">
+                &copy; {new Date().getFullYear()} Docusoft. All rights reserved.
+              </div>
             </div>
           </div>
         )}
