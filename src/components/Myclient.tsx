@@ -80,7 +80,14 @@ const Myclient = () => {
   }, [collapsed]);
   useEffect(() => {
     // Call the function to fetch folders data
-    Json_GetToFavourites();
+    const agrno = localStorage.getItem('agrno');
+    const email = localStorage.getItem('email');
+    const pass = localStorage.getItem('pass');
+    if (agrno && email && pass) {
+      Json_GetToFavourites();
+    } else {
+      console.warn("User data not ready yet");
+    }
     // getAccessToken();
     // const init = async () => {
     //   await getAccessToken();
@@ -106,7 +113,7 @@ const Myclient = () => {
       };
 
       CallApiphp(requestBody, "getTeamsDetailsByTeamId", function (res: any) {
-        if (res) {
+        if (res && res.data && res.data.webUrl) {
           let jsondata = res.data;
           console.log(jsondata.webUrl, "getTeamsDetailsByTeamId");
           window.open(jsondata.webUrl);
@@ -131,7 +138,11 @@ const Myclient = () => {
       if (res) {
         console.log(res, "Json_GetToFavourites");
         let str = JSON.parse(JSON.stringify(res));
-        let json = JSON.parse(str.d);
+        let json = str?.d ? JSON.parse(str.d) : null;
+        if (!json?.Table) {
+          console.warn("Json_GetToFavourites: no Table in response", res);
+          return;
+        }
         //folderData = json.Table
         // Use reduce to create an object with unique OriginatorNo as keys
         const distinctObjects = json.Table.reduce((acc: any, curr: any) => {

@@ -212,6 +212,28 @@ const initMsal = async () => {
   }
 };
 
+// MSAL only allows one interactive (popup) request at a time across the whole
+// app. Several components call loginIfNeeded()/getAccessTokenLogin() on mount
+// concurrently, so without this lock a second popup call throws
+// "interaction_in_progress" instead of reusing the first one's result.
+let pendingInteraction: Promise<any> | null = null;
+const runInteractive = async <T,>(fn: () => Promise<T>): Promise<T> => {
+  while (pendingInteraction) {
+    try {
+      await pendingInteraction;
+    } catch {
+      // the original caller already handles/reports this failure
+    }
+  }
+  const promise = fn();
+  pendingInteraction = promise;
+  try {
+    return await promise;
+  } finally {
+    pendingInteraction = null;
+  }
+};
+
 // ✅ LOGIN (once)
 export const loginIfNeeded = async (): Promise<void> => {
   await initMsal();
@@ -220,9 +242,9 @@ export const loginIfNeeded = async (): Promise<void> => {
   let account = accounts[0];
 
   if (!account) {
-    const response = await msalInstance.loginPopup({
-      scopes: graphRequest.scopes,
-    });
+    const response = await runInteractive(() =>
+      msalInstance.loginPopup({ scopes: graphRequest.scopes })
+    );
     account = response.account!;
   }
 
@@ -256,7 +278,9 @@ export const getAccessTokenLogin = async (): Promise<string> => {
     return result.accessToken;
   } catch (err) {
     if (err instanceof InteractionRequiredAuthError) {
-      const result = await msalInstance.acquireTokenPopup(graphRequest);
+      const result = await runInteractive(() =>
+        msalInstance.acquireTokenPopup(graphRequest)
+      );
       return result.accessToken;
     }
     throw err;

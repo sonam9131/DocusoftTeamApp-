@@ -540,7 +540,14 @@ const handleLoginClick = async () => {
       return p;
     };
     Json_GetAgreementList(requestBody, function (folderlist: any) {
-    
+      if (!folderlist) {
+        console.log("error_data: Json_GetAgreementList failed or returned nothing");
+        setAlertContent("Unable to sign in. Please check your connection and try again.");
+        setAlert(true);
+        setTimeout(() => setAlert(false), 3000);
+        return;
+      }
+
       let str = JSON.parse(JSON.stringify(folderlist));
       console.log("folderlist", str);
 
@@ -578,78 +585,84 @@ const handleLoginClick = async () => {
     <div>
         {showH1 ? (
         <Client />
-        ) : ( 
-          <Container component="main" maxWidth="xs" style={customStyles}>
-             
-          <CssBaseline />
-          <div className={classes.paper}>
+        ) : (
+          <div className="login-screen">
+            <CssBaseline />
+            <div className="login-card">
               <Image
-                  src="https://mydocusoft.com/assets/images/logo.png"
-                  className="styleleft"
-                  alt="Logo"
+                src="https://mydocusoft.com/assets/images/logo.png"
+                className="login-card__logo"
+                alt="Docusoft"
+              />
+              <Typography className="login-card__title" component="h1" variant="h5">
+                Welcome back
+              </Typography>
+              <Typography className="login-card__subtitle">
+                Sign in to continue to Docusoft Teams
+              </Typography>
+
+              <form noValidate onSubmit={handleSubmit}>
+                {alert ? (
+                  <div style={{ marginBottom: "16px" }}>
+                    <Alert severity="error">{alertContent}</Alert>
+                  </div>
+                ) : (
+                  <></>
+                )}
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="email"
+                  label="Email Address"
+                  name="email"
+                  autoComplete="email"
+                  autoFocus
+                  value={agrno_MENT}
+                  onChange={(e) => {
+                    setAgrno_MENT(e.target.value);
+                  }}
                 />
-            {/* </Avatar> */}
-            <Typography component="h1" variant="h5">
-              Sign in
-            </Typography>
-          
-            <form className={classes.form} noValidate onSubmit={handleSubmit}>
-            {alert ? <div style={{marginBottom:"10px"}}><Alert severity='error'>{alertContent}</Alert></div> : <></> }
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                autoFocus
-                value={agrno_MENT}
-                onChange={(e) => {
-                  setAgrno_MENT(e.target.value);
-                }}
-              />
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                value={email_MENT}
-                onChange={(e) => {
-                  setEmail_MENT(e.target.value);
-                }}
-              />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-              >
-                Sign In
-              </Button>
-              <Grid container>
-                <Grid item xs>
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+                  value={email_MENT}
+                  onChange={(e) => {
+                    setEmail_MENT(e.target.value);
+                  }}
+                />
+                <div className="login-card__footer-row">
+                  <FormControlLabel
+                    control={<Checkbox value="remember" color="primary" />}
+                    label={<span style={{ fontSize: 14 }}>Remember me</span>}
+                  />
                   <Link href="https://mydocusoft.com/forgot-password.html" variant="body2">
                     Forgot password?
                   </Link>
-                </Grid>
-              </Grid>
-            </form>
+                </div>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  className="login-card__submit btn-blue"
+                >
+                  Sign In
+                </Button>
+              </form>
+            </div>
+            <div className="login-screen__copyright">
+              &copy; {new Date().getFullYear()} Docusoft. All rights reserved.
+            </div>
           </div>
-        </Container>
         )}
-   
+
     </div>
     );
 }

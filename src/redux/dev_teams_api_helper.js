@@ -103,7 +103,7 @@ export const Json_GetFolders = () => async (dispatch) => {
 
     if (res?.data?.d) {
       const parsedata = JSON.parse(res.data.d);
-      dispatch(setGetFolderData(parsedata.Table || []));
+      dispatch(setGetFolderData(Array.isArray(parsedata.Table) ? parsedata.Table : []));
     }
   } catch (err) {
     console.log("Error while calling Json_GetFolders", err);
@@ -119,10 +119,10 @@ export const Json_GetConfiguration = () => async (dispatch) => {
 
     if (res?.data?.d) {
       const json = JSON.parse(res.data.d);
-      dispatch(setBussiness(json.Table1));
-      dispatch(setSources(json.Table2));
-      dispatch(setMangers(json.Table3));
-      dispatch(setStatus(json.Table));
+      dispatch(setBussiness(Array.isArray(json.Table1) ? json.Table1 : []));
+      dispatch(setSources(Array.isArray(json.Table2) ? json.Table2 : []));
+      dispatch(setMangers(Array.isArray(json.Table3) ? json.Table3 : []));
+      dispatch(setStatus(Array.isArray(json.Table) ? json.Table : []));
     }
   } catch (err) {
     console.log("Error while calling Json_GetConfiguration", err);
@@ -138,13 +138,13 @@ export const getMSTeamsTemplatesList = () => async (dispatch) => {
       "/getMSTeamsTemplatesList",
       commanObjDigi
     );
-     console.log(res,"getMSTeamsTemplatesListgetMSTeamsTemplatesList",res?.data.data);
-     
-    // if (res?.data.data) {
-      const json = res?.data.data; //JSON.parse(res?.data.data);
-      if(json && json.length > 0){
+     console.log(res,"getMSTeamsTemplatesListgetMSTeamsTemplatesList",res?.data?.data);
+
+    // if (res?.data?.data) {
+      const json = res?.data?.data; //JSON.parse(res?.data?.data);
+      if(Array.isArray(json) && json.length > 0){
 console.log(json,"jsongetMSTeamsTemplatesListgetMSTeamsTemplatesList")
-      dispatch(setTeams(json || []));
+      dispatch(setTeams(json));
       }
        
     // }
@@ -162,7 +162,7 @@ export const Json_getMSTeamsTabList = () => async (dispatch) => {
 
     if (res?.data?.d) {
       const json = JSON.parse(res.data.d);
-      dispatch(setTabsapidata(json.Table || []));
+      dispatch(setTabsapidata(Array.isArray(json.Table) ? json.Table : []));
     }
   } catch (err) {
     console.log("Error while calling Json_getMSTeamsTabList", err);

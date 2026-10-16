@@ -44,7 +44,7 @@ export default function Merge() {
   const [channelname, setChannelname] = useState<any>("");
   const [channeldes, setChanneldes] = useState<any>("");
   const [checkboxfeb, setCheckboxfeb] = useState<any>("");
-  const [channels, setChannels] = useState([]);
+  const [channels, setChannels] = useState<any[]>([]);
   const [tabs, setTabs] = useState<any>([]);
   const [tabsapidata, setTabsapidata] = useState<any>([]);
   const [advancedSettingChecked, setAdvancedSettingChecked] = useState(true);
@@ -291,10 +291,14 @@ const savetemplate = () => {
       if (res) {
         console.log(res, "Json_getMSTeamsTabList");
         let str = JSON.parse(JSON.stringify(res));
-        let json = JSON.parse(str.d);
+        let json = str?.d ? JSON.parse(str.d) : null;
         console.log(json, "Json_getMSTeamsTabList");
-        console.log(json.Table, "table1111111");
-        setTabsapidata(json.Table);
+        if (json?.Table) {
+          console.log(json.Table, "table1111111");
+          setTabsapidata(json.Table);
+        } else {
+          setTabsapidata([]);
+        }
         let data = {
           "TabId": 2,
           "TabName": "DMS",
@@ -493,39 +497,42 @@ const savetemplate = () => {
     setDescription(event.target.value);
   };
   const handleChannelName = (event: any, index: any) => {
-    setChannelname(event.target.value);
-    const newChannels: any = [...channels];
-    newChannels[index] = {
-      ...newChannels[index],
-      displayName: event.target.value,
-    };
-    setChannels(newChannels);
+    const { value } = event.target;
+    setChannelname(value);
+    setChannels((prevChannels: any) => {
+      const newChannels = [...prevChannels];
+      newChannels[index] = {
+        ...newChannels[index],
+        displayName: value,
+      };
+      return newChannels;
+    });
   };
   const handleChannelDes = (event: any, index: any) => {
-    setChanneldes(event.target.value);
-    const newChannels: any = [...channels];
-    newChannels[index] = {
-      ...newChannels[index],
-      description: event.target.value,
-    };
-    setChannels(newChannels);
+    const { value } = event.target;
+    setChanneldes(value);
+    setChannels((prevChannels: any) => {
+      const newChannels = [...prevChannels];
+      newChannels[index] = {
+        ...newChannels[index],
+        description: value,
+      };
+      return newChannels;
+    });
   };
   const handleChannecheck = (event: any, index: any) => {
-    const newChannels1: any = [...channels];
-    newChannels1[index] = {
-      ...newChannels1[index],
-      checkboxfeb: event.target.checked,
-    };
-    setChannels(newChannels1);
+    const { checked } = event.target;
+    setChannels((prevChannels: any) => {
+      const newChannels = [...prevChannels];
+      newChannels[index] = {
+        ...newChannels[index],
+        checkboxfeb: checked,
+        isFavoriteByDefault: checked,
+      };
+      return newChannels;
+    });
 
-    setCheckboxfeb(event.target.checked);
-
-    const newChannels: any = [...channels];
-    newChannels[index] = {
-      ...newChannels[index],
-      isFavoriteByDefault: event.target.checked,
-    };
-    setChannels(newChannels);
+    setCheckboxfeb(checked);
   };
   const deleteChannel = (index: any) => {
     const newChannels = [...channels];
@@ -555,7 +562,7 @@ const savetemplate = () => {
                 id={`standard-basic-client-${i}`}
                 label="Channel Name"
                 variant="outlined"
-                value={channels1.channelname}
+                value={channels[i]?.displayName || ''}
                 onChange={(e) => handleChannelName(e, i)}
                 name={`Clientname-${i}`}
               />
@@ -569,7 +576,7 @@ const savetemplate = () => {
                   aria-label="minimum height"
                   minRows={3}
                   name={`fullAddress-${i}`}
-                  value={channels1.channeldes}
+                  value={channels[i]?.description || ''}
                   onChange={(e) => handleChannelDes(e, i)}
                   variant="outlined"
                   label="Channel Description"
@@ -593,7 +600,7 @@ const savetemplate = () => {
                   control={
                     <Switch
                       name={`jason-${i}`}
-                      // checked={checkboxfeb}
+                      checked={channels[i]?.isFavoriteByDefault || false}
                       onChange={(e) => handleChannecheck(e, i)}
                     />
                   }

@@ -94,13 +94,13 @@ const [selectedRoles, setSelectedRoles] = useState<any>({});
       if (res) {
         console.log(res, "response11");
         let str = JSON.parse(JSON.stringify(res));
-        let json = JSON.parse(str.d);
+        let json = str?.d ? JSON.parse(str.d) : null;
         // folderData = json.Table
         // console.log(folderData,"foldersfolders");
-        setFolders(json.Table);
+        setFolders(Array.isArray(json?.Table) ? json.Table : []);
         console.log(folders, "foldersfolders");
       } else {
-        // Handle error if needed
+        setFolders([]);
       }
     });
   };
@@ -132,18 +132,24 @@ const [selectedRoles, setSelectedRoles] = useState<any>({});
       if (res) {
         console.log(res, "Json_GetCCodeClientsByFolder");
         let str = JSON.parse(JSON.stringify(res));
-        let json = JSON.parse(str.d);
+        let json = str?.d ? JSON.parse(str.d) : null;
+        if (!Array.isArray(json?.Table)) {
+          console.warn("Json_GetCCodeClientsByFolder: no Table in response", res);
+          setBussiness([]);
+          return;
+        }
         const filteredData = json.Table.filter((item: any) => !item.MTeamId);
 
         console.log(json.Table, "Getclientbyfolder", filteredData);
 
         setBussiness(filteredData);
       } else {
+        setBussiness([]);
       }
     });
   };
   const defaultProps = {
-    options: teams,
+    options: Array.isArray(teams) ? teams : [],
     getOptionLabel: (option: FilmOptionType) => option.Name || "",
   };
   const handleChannecheck = (event: any,index:any) => {
@@ -156,12 +162,14 @@ const [selectedRoles, setSelectedRoles] = useState<any>({});
       updatedCheckboxes[index] = checked;
       return updatedCheckboxes;
     });
-    const newChannels1: any = [...channels];
-    newChannels1[index] = {
-      ...newChannels1[index],
-      isFavoriteByDefault: event.target.checked,
-    };
-    setChannels(newChannels1);
+    setChannels((prevChannels: any) => {
+      const newChannels1 = [...prevChannels];
+      newChannels1[index] = {
+        ...newChannels1[index],
+        isFavoriteByDefault: event.target.checked,
+      };
+      return newChannels1;
+    });
   };
   const onChangeTeams = (
     event: React.ChangeEvent<{}>,
@@ -186,7 +194,7 @@ const [selectedRoles, setSelectedRoles] = useState<any>({});
     CallApiphp(requestBody, "getMSTeamsTemplatesList", function (res: any) {
       if (res) {
         console.log(res, "getMSTeamsTemplatesList");
-        setTeams(res.data);
+        setTeams(Array.isArray(res.data) ? res.data : []);
       } else {
       }
     });
@@ -351,11 +359,23 @@ const newChannels1: any = [...channels];
   }
   const userNameData: any = loading || error ? "" : data;
   console.log(memberuser, "memberusermemberuser");
-  const createDefaultTeam = () => {
+  const createDefaultTeam = async () => {
     console.log(channels,"datacurrentsonam",template);
     let agrno: any = localStorage.getItem("agrno");
     let email: any = localStorage.getItem("email");
     let password: any = localStorage.getItem("pass");
+    // The MSAL token fetched on mount may not have resolved yet if the user
+    // races through the wizard; re-acquire it (cheap/silent once logged in)
+    // instead of submitting with a null accessToken.
+    let accessToken = templateData;
+    if (!accessToken) {
+      try {
+        accessToken = await getAccessTokenLogin();
+        setTemplateData(accessToken);
+      } catch (e) {
+        console.error("Failed to acquire access token before team creation", e);
+      }
+    }
     let templatedata: any = {
       "template@odata.bind":
         "https://graph.microsoft.com/v1.0/teamsTemplates/standard",
@@ -414,7 +434,7 @@ const newChannels1: any = [...channels];
       TemplateData: [templatedata],
       MembersData: memberdata,
       tenantId: userNameData.tenantId,
-      accessToken: templateData,
+      accessToken: accessToken,
     };
     console.log("getDomian",clienttestObj);
     CallApiphp(clienttestObj, "createDefaultTeam", function (res: any) {
@@ -468,15 +488,14 @@ const newChannels1: any = [...channels];
       },
     };
    
-    const newChannels1: any = [...channels];
-    newChannels1[index] = {
-      ...newChannels1[index],
-      tabs: [newTab],
-    };
-    setChannels(newChannels1);
-setTimeout(() => {
-  console.log(channels,index, "isCheckedggg",newTab);
-}, 4000);
+    setChannels((prevChannels: any) => {
+      const newChannels1 = [...prevChannels];
+      newChannels1[index] = {
+        ...newChannels1[index],
+        tabs: [newTab],
+      };
+      return newChannels1;
+    });
 
   };
   useEffect(() => {
@@ -509,9 +528,9 @@ setTimeout(() => {
       if (res) {
         console.log(res, "Json_GetConfiguration");
         let str = JSON.parse(JSON.stringify(res));
-        let json = JSON.parse(str.d);
+        let json = str?.d ? JSON.parse(str.d) : null;
         console.log(json, "Json_GetConfiguration1");
-        setBussiness(json.Table1);
+        setBussiness(Array.isArray(json?.Table1) ? json.Table1 : []);
       } else {
         // Handle error if needed
       }
@@ -537,15 +556,17 @@ setTimeout(() => {
       console.log(value.ClientID, "ClientID", selectedBussId);
     } else {
       // If no option is selected, clear the selectedFolderID state
+      clientData = null;
+      clientName = null;
       setSelectedBussId(null);
     }
   };
   const clientlist = {
-    options: folders,
+    options: Array.isArray(folders) ? folders : [],
     getOptionLabel: (option: FolderList) => option.Folder || "",
   };
   const bussinesslist = {
-    options: bussiness,
+    options: Array.isArray(bussiness) ? bussiness : [],
     getOptionLabel: (option: BussinessList) => option.Client || "",
   };
 

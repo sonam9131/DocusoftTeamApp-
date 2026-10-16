@@ -19,6 +19,7 @@ import Enguagements from "./Enguagements";
 import Analytics from "./Analytics";
 import { Login } from "./Logintest";
 import RequireAuth from "./RequireAuth";
+import ErrorBoundary from "./ErrorBoundary";
 
 export default function App() {
   const { loading, theme, themeString, teamsUserCredential } = useTeamsUserCredential({
@@ -45,49 +46,51 @@ export default function App() {
           {loading ? (
             <Spinner style={{ margin: 100 }} />
           ) : (
-            <Routes>
-              {/* Public Routes */}
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/termsofuse" element={<TermsOfUse />} />
-              <Route path="/login" element={<Login />} />
+            <ErrorBoundary label="Docusoft Teams app">
+              <Routes>
+                {/* Public Routes */}
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/termsofuse" element={<TermsOfUse />} />
+                <Route path="/login" element={<Login />} />
 
-              {/* Protected Routes */}
-              <Route
-                path="/tab"
-                element={
-                  <RequireAuth>
-                    <Tab />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path="/admin"
-                element={
-                  <RequireAuth>
-                    <Admin />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path="/enguagement"
-                element={
-                  <RequireAuth>
-                    <Enguagements />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path="/analytics"
-                element={
-                  <RequireAuth>
-                    <Analytics />
-                  </RequireAuth>
-                }
-              />
+                {/* Protected Routes */}
+                <Route
+                  path="/tab"
+                  element={
+                    <RequireAuth>
+                      <Tab />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path="/admin"
+                  element={
+                    <RequireAuth>
+                      <Admin />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path="/enguagement"
+                  element={
+                    <RequireAuth>
+                      <Enguagements />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path="/analytics"
+                  element={
+                    <RequireAuth>
+                      <Analytics />
+                    </RequireAuth>
+                  }
+                />
 
-              {/* Default Redirect */}
-              <Route path="*" element={<Navigate to="/tab" />} />
-            </Routes>
+                {/* Default Redirect */}
+                <Route path="*" element={<Navigate to="/tab" />} />
+              </Routes>
+            </ErrorBoundary>
           )}
         </Router>
       </FluentProvider>

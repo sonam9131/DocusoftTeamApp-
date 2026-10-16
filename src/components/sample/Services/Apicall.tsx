@@ -37,9 +37,14 @@ const CallApi=(data:any,method:any,callback:any)=>{
             })
             .catch(error => {
               console.error('Fetch Error:', error);
+              // Without this, a network/HTTP failure would never invoke the
+              // caller's callback at all, leaving it stuck forever (e.g. a
+              // loading spinner or disabled submit button that never clears).
+              callback(null);
             });
     } catch (error) {
         console.log("Error",error)
+        callback(null);
     }
 
 }
@@ -87,9 +92,14 @@ const CallApiphp=(data:any,method:any,callback:any)=>{
         })
         .catch(error => {
           console.error('Fetch Error:', error);
+          // Without this, a network/HTTP failure would never invoke the
+          // caller's callback at all, leaving it stuck forever (e.g. a
+          // loading spinner or disabled submit button that never clears).
+          callback(null);
         });
 } catch (error) {
     console.log("Error",error)
+    callback(null);
 }
 }
 

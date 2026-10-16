@@ -102,7 +102,8 @@ const [selectedRoles, setSelectedRoles] = useState<any>({});
     countries.find((country) => country.label === "United Kingdom")?.label
   );
   const [selectedTeam, setSelectedTeam] = useState<any>(null);
-  const [value, setValue] = useState<any>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [value, setValue] = useState<any>("1"); // active "Main Address" tab key ("1"-"4")
   const [template, setTemplate] = useState<any>(null);
   const [templateData, setTemplateData] = useState<any>(null);
   const [templatesettings, setTemplatesettings] = useState<any>(null);
@@ -264,42 +265,42 @@ useEffect(() => {
           let jsondata = res.data[0];
           let templateSetting = JSON.parse(jsondata.TemplateSettings);
           console.log(templateSetting, "templatesettings");
-          if (templatesettings) {
+          if (templateSetting) {
             setChannelSettings((prevUserDetail) => ({
               ...prevUserDetail,
               allowCreateUpdateChannels:
-                templatesettings.memberSettings.allowCreateUpdateChannels,
+                templateSetting.memberSettings.allowCreateUpdateChannels,
               allowDeleteChannels:
-                templatesettings.memberSettings.allowDeleteChannels,
+                templateSetting.memberSettings.allowDeleteChannels,
               allowAddRemoveApps:
-                templatesettings.memberSettings.allowAddRemoveApps,
+                templateSetting.memberSettings.allowAddRemoveApps,
               allowCreateUpdateRemoveTabs:
-                templatesettings.memberSettings.allowCreateUpdateRemoveTabs,
+                templateSetting.memberSettings.allowCreateUpdateRemoveTabs,
               allowCreateUpdateRemoveConnectors:
-                templatesettings.memberSettings
+                templateSetting.memberSettings
                   .allowCreateUpdateRemoveConnectors,
               allowCreateUpdateChannelsGuest:
-                templatesettings.guestSettings.allowCreateUpdateChannelsGuest,
+                templateSetting.guestSettings.allowCreateUpdateChannelsGuest,
               allowDeleteChannelsGuest:
-                templatesettings.guestSettings.allowDeleteChannelsGuest,
+                templateSetting.guestSettings.allowDeleteChannelsGuest,
               allowDeleteChannelsFun:
-                templatesettings.funSettings.allowDeleteChannelsFun,
+                templateSetting.funSettings.allowDeleteChannelsFun,
               allowStickersAndMemesFun:
-                templatesettings.funSettings.allowStickersAndMemesFun,
+                templateSetting.funSettings.allowStickersAndMemesFun,
               allowCustomMemesFun:
-                templatesettings.funSettings.allowCustomMemesFun,
+                templateSetting.funSettings.allowCustomMemesFun,
               allowUserEditMessages:
-                templatesettings.messagingSettings.allowUserEditMessages,
+                templateSetting.messagingSettings.allowUserEditMessages,
               allowUserDeleteMessages:
-                templatesettings.messagingSettings.allowUserDeleteMessages,
+                templateSetting.messagingSettings.allowUserDeleteMessages,
               allowOwnerDeleteMessages:
-                templatesettings.messagingSettings.allowOwnerDeleteMessages,
+                templateSetting.messagingSettings.allowOwnerDeleteMessages,
               allowTeamMentions:
-                templatesettings.messagingSettings.allowTeamMentions,
+                templateSetting.messagingSettings.allowTeamMentions,
               allowChannelMentions:
-                templatesettings.messagingSettings.allowChannelMentions,
+                templateSetting.messagingSettings.allowChannelMentions,
               showInTeamsSearchAndSuggestions:
-                templatesettings.discoverySettings
+                templateSetting.discoverySettings
                   .showInTeamsSearchAndSuggestions,
             }));
           }
@@ -447,11 +448,23 @@ useEffect(() => {
 
     Json_SetClientAddress(obj);
   };
-  const createDefaultTeam = () => {
+  const createDefaultTeam = async () => {
     let agrno: any = localStorage.getItem("agrno");
     let email: any = localStorage.getItem("email");
     let password: any = localStorage.getItem("pass");
     let projectId: any = localStorage.getItem("projectid");
+    // The MSAL token fetched on mount may not have resolved yet if the user
+    // races through the wizard; re-acquire it (cheap/silent once logged in)
+    // instead of submitting with a null accessToken.
+    let accessToken = templateData;
+    if (!accessToken) {
+      try {
+        accessToken = await getAccessTokenLogin();
+        setTemplateData(accessToken);
+      } catch (e) {
+        console.error("Failed to acquire access token before team creation", e);
+      }
+    }
     let datacurrent: any = localStorage.getItem("currentUser");
     let currentuserData = JSON.parse(datacurrent);
     console.log(
@@ -522,7 +535,7 @@ useEffect(() => {
       TemplateData: [templatedata],
       MembersData: memberdata,
       tenantId: userNameData.tenantId,
-      accessToken: templateData,
+      accessToken: accessToken,
     };
     console.log("getDomian");
     CallApiphp(clienttestObj, "createDefaultTeam", function (res: any) {
@@ -547,12 +560,11 @@ useEffect(() => {
   ) => {
     event.preventDefault();
     if (value) {
-      setValue(value.TemplateId ? value.TemplateId : "");
        setSelectedTeam(value);
       console.log(value, "SourceIdiiioioioi");
       getMSTeamsTemplatesDetailsById(value.TemplateId);
     } else {
-      setValue(null);
+      setSelectedTeam(null);
     }
   };
 
@@ -660,12 +672,14 @@ const onChangeclientlist = (
       updatedCheckboxes[index] = checked;
       return updatedCheckboxes;
     });
-    const newChannels1: any = [...channels];
-    newChannels1[index] = {
-      ...newChannels1[index],
-      isFavoriteByDefault: event.target.checked,
-    };
-    setChannels(newChannels1);
+    setChannels((prevChannels: any) => {
+      const newChannels1 = [...prevChannels];
+      newChannels1[index] = {
+        ...newChannels1[index],
+        isFavoriteByDefault: event.target.checked,
+      };
+      return newChannels1;
+    });
   };
   const onChangestatuss = (
     event: React.ChangeEvent<{}>,
@@ -782,28 +796,28 @@ const onChangeclientlist = (
   init();
   }, []); // Empty dependency array ensures useEffect runs only once after initial render
   const defaultProps = {
-    options: teams,
+    options: Array.isArray(teams) ? teams : [],
     getOptionLabel: (option: FilmOptionType) => option.Name || "",
   };
 
   const clientlist = {
-    options: folders,
+    options: Array.isArray(folders) ? folders : [],
     getOptionLabel: (option: FolderList) => option.Folder || "",
   };
   const bussinesslist = {
-    options: bussiness,
+    options: Array.isArray(bussiness) ? bussiness : [],
     getOptionLabel: (option: BussinessList) => option.BussName || "",
   };
   const sourcelist = {
-    options: sources,
+    options: Array.isArray(sources) ? sources : [],
     getOptionLabel: (option: SourceList) => option.SourceName || "",
   };
   const userlistdata = {
-    options: mangers,
+    options: Array.isArray(mangers) ? mangers : [],
     getOptionLabel: (option: UserList) => option.UserName || "",
   };
   const statuslistdata = {
-    options: status,
+    options: Array.isArray(status) ? status : [],
     getOptionLabel: (option: StatusList) => option.StatusName || "",
   };
   const [selectedValue, setSelectedValue] = useState("create");
@@ -842,12 +856,14 @@ const onChangeclientlist = (
       },
     };
     console.log(newTab, "newTabdata");
-    const newChannels1: any = [...channels];
-    newChannels1[index] = {
-      ...newChannels1[index],
-      tabs: [newTab],
-    };
-    setChannels(newChannels1);
+    setChannels((prevChannels: any) => {
+      const newChannels1 = [...prevChannels];
+      newChannels1[index] = {
+        ...newChannels1[index],
+        tabs: [newTab],
+      };
+      return newChannels1;
+    });
   };
 
   const [activeStep, setActiveStep] = React.useState(0);
@@ -939,6 +955,10 @@ if (activeStep === 2) {
 
   // 🔹 IF LAST STEP → CALL API
   if (activeStep === steps.length - 1) {
+    if (submitting) {
+      return; // 🚫 prevent duplicate submit while the API call is in flight
+    }
+    setSubmitting(true);
     let agrno: any = localStorage.getItem("agrno");
     let email: any = localStorage.getItem("email");
     let password: any = localStorage.getItem("pass");
@@ -948,7 +968,7 @@ if (activeStep === 2) {
       agrno: agrno,
       Email: email,
       password: password,
-      ProjectIdList: folderData ? folderData : -1,
+      ProjectIdList: selectedFolderID ? selectedFolderID : -1,
       OriginatorNo: userDetail.Clientid ? userDetail.Clientid : "",
       OriginatorName: userDetail.Clientname ? userDetail.Clientname : "",
       Address: userDetail.fullAddress ? userDetail.fullAddress : "",
@@ -982,11 +1002,19 @@ if (activeStep === 2) {
           billingAddress();
           ragisterAddress();
           createDefaultTeam();
+          setSubmitting(false);
+          setActiveStep((prevActiveStep) => prevActiveStep + 1);
         } else {
+          setSubmitting(false);
           setAlertContent("Reference ID Already Exist");
           setAlert(true);
           setTimeout(() => setAlert(false), 3000);
         }
+      } else {
+        setSubmitting(false);
+        setAlertContent("Failed to add client. Please try again.");
+        setAlert(true);
+        setTimeout(() => setAlert(false), 3000);
       }
     });
 
@@ -1099,7 +1127,7 @@ if (activeStep === 2) {
             />
           </Grid>
 
-          <Grid item xs={6} md={6}>
+          <Grid item xs={12}>
             <Autocomplete
   {...clientlist}
   id="clientlist"
@@ -2038,22 +2066,18 @@ if (activeStep === 2) {
               name="client-options"
               value={selectedValue}
               onChange={handleChangeradio}
-              style={{ display: "flex", flexDirection: "row" }}
+              className="segmented-toggle"
             >
-              <Box>
-                <FormControlLabel
-                  value="create"
-                  control={<Radio />}
-                  label="Create Client1"
-                />
-              </Box>
-              <Box>
-                <FormControlLabel
-                  value="import"
-                  control={<Radio />}
-                  label="Import Client11"
-                />
-              </Box>
+              <FormControlLabel
+                value="create"
+                control={<Radio />}
+                label="Create Client"
+              />
+              <FormControlLabel
+                value="import"
+                control={<Radio />}
+                label="Import Client"
+              />
             </RadioGroup>
           </Box>
           <hr />
@@ -2093,15 +2117,20 @@ if (activeStep === 2) {
                             <Button
                               variant="contained"
                               onClick={handleNext}
+                              disabled={
+                                activeStep === steps.length - 1 && submitting
+                              }
                               sx={{ mt: 1, mr: 1 }}
                               className="btn-blue"
                             >
                               {activeStep === steps.length - 1
-                                ? "Add Client"
+                                ? submitting
+                                  ? "Adding Client..."
+                                  : "Add Client"
                                 : "Continue"}
                             </Button>
                             <Button
-                              disabled={index === 0}
+                              disabled={index === 0 || submitting}
                               onClick={handleBack}
                               sx={{ mt: 1, mr: 1 }}
                             >

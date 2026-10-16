@@ -17,6 +17,7 @@ import {
 import React, { useEffect, useState } from "react";
 import CallApi, { CallApiphp } from "./sample/Services/Apicall";
 import MergeComponent from "./Merge";
+import AppHeader from "./AppHeader";
 // let agrno: any = localStorage.getItem("agrno");
 // let email: any = localStorage.getItem("email");
 // let password: any = localStorage.getItem("pass");
@@ -29,7 +30,7 @@ export default function Admin() {
   const [channelname, setChannelname] = useState<any>("");
   const [channeldes, setChanneldes] = useState<any>("");
   const [checkboxfeb, setCheckboxfeb] = useState<any>("");
-  const [channels, setChannels] = useState([]);
+  const [channels, setChannels] = useState<any[]>([]);
   const [tabs, setTabs] = useState<any>([]);
   const [tabsapidata, setTabsapidata] = useState<any>([]);
   // const [advancedSettingChecked, setAdvancedSettingChecked] = useState(true);
@@ -237,11 +238,16 @@ export default function Admin() {
       if (res) {
         console.log(res, "Json_getMSTeamsTabList");
         let str = JSON.parse(JSON.stringify(res));
-        let json = JSON.parse(str.d);
+        let json = str?.d ? JSON.parse(str.d) : null;
         console.log(json, "Json_getMSTeamsTabList");
-        console.log(json.Table, "table1111111");
-        setTabsapidata(json.Table);
+        if (json?.Table) {
+          console.log(json.Table, "table1111111");
+          setTabsapidata(json.Table);
+        } else {
+          setTabsapidata([]);
+        }
       } else {
+        setTabsapidata([]);
       }
     });
   };
@@ -266,7 +272,7 @@ export default function Admin() {
       },
       displayName: event.target.name,
       configuration: {
-        contentUrl: tabsapidata[0].BaseUrl,
+        contentUrl: tabsapidata[0]?.BaseUrl ?? "",
       },
     };
 
@@ -323,21 +329,17 @@ export default function Admin() {
     setChannels(newChannels);
   };
   const handleChannecheck = (event: any, index: any) => {
-    const newChannels1: any = [...channels];
-    newChannels1[index] = {
-      ...newChannels1[index],
-      checkboxfeb: event.target.checked,
-    };
-    setChannels(newChannels1);
+    setChannels((prevChannels: any) => {
+      const newChannels = [...prevChannels];
+      newChannels[index] = {
+        ...newChannels[index],
+        checkboxfeb: event.target.checked,
+        isFavoriteByDefault: event.target.checked,
+      };
+      return newChannels;
+    });
 
     setCheckboxfeb(index);
-
-    const newChannels: any = [...channels];
-    newChannels[index] = {
-      ...newChannels[index],
-      isFavoriteByDefault: event.target.checked,
-    };
-    setChannels(newChannels);
   };
   const deleteChannel = (index: any) => {
     const newChannels = [...channels];
@@ -492,6 +494,8 @@ export default function Admin() {
     setShowCreateTemplate(!showCreateTemplate);
   }
   return (
+    <div className="welcome page container">
+      <AppHeader title="Template Administration" />
     <div className="tabList container">
       <TabList selectedValue={selectedValue} onTabSelect={onTabSelect} className='custom-tabs'>
         <Tab className="btn-tabs" id="Local" value="local">
@@ -509,6 +513,7 @@ export default function Admin() {
           <MergeComponent />
         )}
       </div>
+    </div>
     </div>
   );
 }

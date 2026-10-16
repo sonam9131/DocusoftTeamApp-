@@ -1,24 +1,6 @@
 
-
-
-@import url("https://fonts.googleapis.com/css2?family=Pacifico&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Pacifico&family=Titillium+Web:wght@300&display=swap");
-
-/* * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Titillium Web", sans-serif;
-} */
-
-/* body {
-  background: #f50057;
-  position: relative;
-} */
-
 .App {
   text-align: center;
-  /* background-color: white; */
 }
 
 .form_container {
@@ -30,14 +12,6 @@
 
 .input {
   width: 75%;
-}
-.styleleft{
-  margin-left:40%;
-}
-h1 {
-  margin-bottom: 10px;
-  font-size: 40px;
-  font-family: "Pacifico", cursive;
 }
 
 .input_2 {

@@ -120,8 +120,15 @@ const handleCheckboxChange = (rowData: any) => {
   }, [collapsed]);
   useEffect(() => {
     // Call the function to fetch folders data
-    Json_GetAllSupplierList();
-    Json_GetToFavourites();
+    const agrno = localStorage.getItem('agrno');
+    const email = localStorage.getItem('email');
+    const pass = localStorage.getItem('pass');
+    if (agrno && email && pass) {
+      Json_GetAllSupplierList();
+      Json_GetToFavourites();
+    } else {
+      console.warn("User data not ready yet");
+    }
     // getAccessToken();
     // const init = async () => {
     //   await getAccessToken();
@@ -147,11 +154,11 @@ const handleCheckboxChange = (rowData: any) => {
       };
       
       CallApiphp(requestBody, "getTeamsDetailsByTeamId", function (res: any) {
-        if (res) {
+        if (res && res.data && res.data.webUrl) {
           let jsondata = res.data;
           console.log(jsondata.webUrl, "getTeamsDetailsByTeamId");
           window.open(jsondata.webUrl);
-          
+
         } else {
           // Handle error if needed
         }
@@ -172,8 +179,11 @@ const handleCheckboxChange = (rowData: any) => {
       if (res) {
         console.log(res, "Json_GetToFavourites");
         let str = JSON.parse(JSON.stringify(res));
-        let json = JSON.parse(str.d);
-       
+        let json = str?.d ? JSON.parse(str.d) : null;
+        if (!json?.Table) {
+          console.warn("Json_GetToFavourites: no Table in response", res);
+          return;
+        }
         const filteredArray =  json.Table.filter((obj:any) => obj.OriginatorNo !== '');
         fevData = filteredArray;
     
@@ -196,12 +206,15 @@ CallApi(requestBody, "Json_GetAllSupplierList", function (res: any) {
   if (res) {
     console.log(res, "response11");
     let str = JSON.parse(JSON.stringify(res));
-    let json = JSON.parse(str.d);
-   
+    let json = str?.d ? JSON.parse(str.d) : null;
+    if (!json?.Table) {
+      console.warn("Json_GetAllSupplierList: no Table in response", res);
+      return;
+    }
 
     // folderData = json.Table
     const filteredArray =  json.Table.filter((obj:any) => obj.OriginatorNo !== '');
-    
+
   folderData = filteredArray;
   console.log(folderData,"Json_GetAllSupplierList",fevData);
   const uniqueData = filteredArray.filter((item:any, index:any, self:any) =>

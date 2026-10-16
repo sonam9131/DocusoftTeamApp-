@@ -96,7 +96,13 @@ const Member = ({ setMemberuser }: any) => {
       if (res) {
         console.log(res, "Json_GetToFavourites");
         let str = JSON.parse(JSON.stringify(res));
-        let json = JSON.parse(str.d);
+        let json = str?.d ? JSON.parse(str.d) : null;
+
+        if (!json?.Table) {
+          console.warn("Json_GetToFavourites: no Table in response", res);
+          setShowH1([]);
+          return;
+        }
 
         const filteredArray = json.Table.filter((obj: any) => obj.OriginatorNo !== '');
         fevData = filteredArray;
@@ -104,12 +110,12 @@ const Member = ({ setMemberuser }: any) => {
         setShowH1(filteredArray);
         console.log(json, "Json_GetToFavourites11", showH1);
       } else {
-        // Handle error if needed
+        setShowH1([]);
       }
     });
   };
 
-  
+
   const Json_GetAllSupplierList = () => {
     let passdata: any = localStorage.getItem('pass');
     let requestBody = {
@@ -122,7 +128,11 @@ const Member = ({ setMemberuser }: any) => {
       if (res) {
         console.log(res, "response11");
         let str = JSON.parse(JSON.stringify(res));
-        let json = JSON.parse(str.d);
+        let json = str?.d ? JSON.parse(str.d) : null;
+        if (!json?.Table) {
+          console.warn("Json_GetAllSupplierList: no Table in response", res);
+          return;
+        }
         const filteredArray = json.Table.filter((obj: any) => obj.OriginatorNo !== '');
 
         folderData = filteredArray;
@@ -140,9 +150,9 @@ const Member = ({ setMemberuser }: any) => {
     }
     console.log(tokendata, "getUsersMSTeam_request");
     CallApiphp(tokendata, "getUsersMSTeam", function (res: any) {
-      if (res) {
+      if (res && res.data) {
         console.log(res.data["value"], "getUsersMSTeam");
-        setUserteams(res.data["value"]);
+        setUserteams(res.data["value"] || []);
       } else {
       }
     });

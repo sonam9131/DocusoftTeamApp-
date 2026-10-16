@@ -156,11 +156,16 @@ export default function EditAdmin({ showInput, templatesettings, templatedata, t
       if (res) {
         console.log(res, "Json_getMSTeamsTabList");
         let str = JSON.parse(JSON.stringify(res));
-        let json = JSON.parse(str.d);
+        let json = str?.d ? JSON.parse(str.d) : null;
         console.log(json, "Json_getMSTeamsTabList");
-        console.log(json.Table, "table1111111");
-        setTabsapidata(json.Table);
+        if (json?.Table) {
+          console.log(json.Table, "table1111111");
+          setTabsapidata(json.Table);
+        } else {
+          setTabsapidata([]);
+        }
       } else {
+        setTabsapidata([]);
       }
     });
   };
@@ -298,12 +303,14 @@ export default function EditAdmin({ showInput, templatesettings, templatedata, t
       },
     };
     console.log(newTab, "newTabdata");
-    const newChannels1: any = [...channels];
-    newChannels1[index] = {
-      ...newChannels1[index],
-      tabs: [newTab],
-    };
-    setChannels(newChannels1);
+    setChannels((prevChannels: any) => {
+      const newChannels1 = [...prevChannels];
+      newChannels1[index] = {
+        ...newChannels1[index],
+        tabs: [newTab],
+      };
+      return newChannels1;
+    });
 
   //   if (isChecked) {
   //     // Push a new channel object with the tab information
@@ -441,49 +448,55 @@ export default function EditAdmin({ showInput, templatesettings, templatedata, t
   const handleChannelName = (event: any,index:any) => {
     // setChannelname(event.target.value);
     const { value } = event.target;
-    const newChannels: any = [...channels];
-    newChannels[index] = {
-      ...newChannels[index],
-      displayName: event.target.value,
-    };
     setChannelname((prevNames:any) => {
       const updatedNames = [...prevNames];
       updatedNames[index] = value;
       return updatedNames;
     });
-    setChannels(newChannels);
+    setChannels((prevChannels: any) => {
+      const newChannels = [...prevChannels];
+      newChannels[index] = {
+        ...newChannels[index],
+        displayName: value,
+      };
+      return newChannels;
+    });
   };
   const handleChannelDes = (event: any,index:any) => {
     // setChanneldes(event.target.value);
     const { value } = event.target;
-    const newChannels: any = [...channels];
-    newChannels[index] = {
-      ...newChannels[index],
-      description: event.target.value,
-    };
     setChanneldes((prevDescriptions:any) => {
       const updatedDescriptions = [...prevDescriptions];
       updatedDescriptions[index] = value;
       return updatedDescriptions;
     });
-    setChannels(newChannels);
+    setChannels((prevChannels: any) => {
+      const newChannels = [...prevChannels];
+      newChannels[index] = {
+        ...newChannels[index],
+        description: value,
+      };
+      return newChannels;
+    });
   };
   const handleChannecheck = (event: any,index:any) => {
 
     // setCheckboxfeb(event.target.checked);
-    
+
     const { checked } = event.target;
     setCheckboxfeb((prevCheckboxes:any) => {
       const updatedCheckboxes = [...prevCheckboxes];
       updatedCheckboxes[index] = checked;
       return updatedCheckboxes;
     });
-    const newChannels1: any = [...channels];
-    newChannels1[index] = {
-      ...newChannels1[index],
-      isFavoriteByDefault: event.target.checked,
-    };
-    setChannels(newChannels1);
+    setChannels((prevChannels: any) => {
+      const newChannels1 = [...prevChannels];
+      newChannels1[index] = {
+        ...newChannels1[index],
+        isFavoriteByDefault: checked,
+      };
+      return newChannels1;
+    });
   };
   const additionalFields: any = [];
   const [expanded, setExpanded] = useState<string | false>(false);

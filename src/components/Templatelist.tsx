@@ -124,7 +124,13 @@ const Templatelist = (props:any) => {
       if (res) {
         console.log(res, "Json_GetToFavourites");
         let str = JSON.parse(JSON.stringify(res));
-        let json = JSON.parse(str.d);
+        let json = str?.d ? JSON.parse(str.d) : null;
+
+        if (!json?.Table) {
+          console.warn("Json_GetToFavourites: no Table in response", res);
+          setShowH1([]);
+          return;
+        }
 
         const filteredArray = json.Table.filter(
           (obj: any) => obj.OriginatorNo !== ""
@@ -134,7 +140,7 @@ const Templatelist = (props:any) => {
         setShowH1(filteredArray);
         console.log(json, "Json_GetToFavourites11", showH1);
       } else {
-        // Handle error if needed
+        setShowH1([]);
       }
     });
   };
@@ -338,11 +344,10 @@ const getMSTeamsTemplatesList = () => {
       };
       setTemplateID(e.data.TemplateId);
       CallApiphp(requestBody, "getMSTeamsTemplatesDetailsById", function (res: any) {
-        if (res) {
-         
+        if (res && res.data && res.data[0]) {
           console.log(res, "getMSTeamsTemplatesDetailsById");
-          setShowInput(res.data[0]);
           let jsondata = res.data[0];
+          setShowInput(jsondata);
           let templateSetting = JSON.parse(jsondata.TemplateSettings);
           console.log(templateSetting, "templatesettings");
           setTemplatesettings(templateSetting);
