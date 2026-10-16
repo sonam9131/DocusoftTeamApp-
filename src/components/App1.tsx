@@ -331,23 +331,6 @@ const Json_RemoveToFavourite = (rowData: any) => {
     }
   });
 };
-// const getAccessToken = async () => {
-//   // let request = {
-//   //   "clientId": "9cc33c54-4615-47f4-94dc-7ccaa75e5378",
-//   //   "clientSecret": "REDACTED_SECRET_ROTATE_ME",
-//   //   "tenantId": "00175dea-da9a-4dfa-8dd0-7f96eb63ace0"
-//   // }
-//   // CallApiphp(request, "getAccessToken", function (res: any) {
-//   //   if (res) {
-//   //     console.log(res.token, "getAccessToken");
-//       // getUsersMSTeam(res.token);
-//       const token = await getAccessTokenLogin(); // 🔥 auto refresh
-//       console.log(token, "App1getAccessTokenLogin_token");
-//       setTemplateData(token);
-//     // } else {
-//     // }
-//   // });
-// }
 const handleDelete = (e:any) => {
   // Handle row deletion here
   console.log('Row_deletedssss:', e.data);
